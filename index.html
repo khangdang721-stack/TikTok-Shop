@@ -815,6 +815,10 @@
         display: none;
       }
 
+      .zlp-reward-row.is-context-hidden {
+        display: none;
+      }
+
       .zlp-reward-copy {
         min-width: 0;
       }
@@ -1310,6 +1314,7 @@
                     class="zlp-reward-row"
                     data-concept="concept1"
                     data-reward-id="reward-500"
+                    data-reward-source="default"
                     data-xu="500"
                     data-order-amount="100.000đ"
                     data-history-wait-days="0"
@@ -1330,6 +1335,7 @@
                     class="zlp-reward-row zlp-reward-row--countdown"
                     data-concept="concept1"
                     data-reward-id="reward-2725"
+                    data-reward-source="default"
                     data-xu="2725"
                     data-order-amount="545.000đ"
                     data-history-wait-days="2"
@@ -1497,6 +1503,7 @@
                     class="zlp-reward-row"
                     data-concept="concept2"
                     data-reward-id="reward-500"
+                    data-reward-source="default"
                     data-xu="500"
                     data-order-amount="100.000đ"
                     data-history-ready="true"
@@ -1781,6 +1788,7 @@
         let shoppingFlowNotiVisible = false;
         let shoppingFlowNotiTimerId = 0;
         let activeShoppingFlowConcept = "concept2";
+        let activeLandingContext = "default";
 
         if (
           !homeScreen ||
@@ -1812,6 +1820,7 @@
             concept: currentConcept,
             historyConcept: currentHistoryConcept,
             shoppingFlowConcept: activeShoppingFlowConcept,
+            landingContext: activeLandingContext,
           };
         }
 
@@ -1933,6 +1942,25 @@
             : "Nhận xu sau 10 ngày từ lúc chốt đơn nha";
         }
 
+        function getFlowReturnContextForConcept(conceptKey) {
+          return "flow-return-" + conceptKey;
+        }
+
+        function updateLandingRewardVisibility(conceptKey) {
+          const concept = getConceptState(conceptKey);
+
+          if (!concept) {
+            return;
+          }
+
+          const isFlowReturnContext = activeLandingContext === getFlowReturnContextForConcept(conceptKey);
+
+          concept.rewardRows.forEach(function (row) {
+            const rewardSource = row.dataset.rewardSource || "default";
+            row.classList.toggle("is-context-hidden", isFlowReturnContext && rewardSource !== "shopping-flow");
+          });
+        }
+
         function showScreen(screenName) {
           currentScreen = screenName;
           const isHome = screenName === "home";
@@ -1953,6 +1981,10 @@
 
         function updateConceptTabs() {
           renderFlowInform();
+          Object.keys(concepts).forEach(updateLandingRewardVisibility);
+          Object.keys(concepts).forEach(function (conceptKey) {
+            updateDoneState(getConceptState(conceptKey));
+          });
         }
 
         function renderBodyTabs(conceptKey) {
@@ -2004,12 +2036,14 @@
             concept: "concept2",
             historyConcept: "concept2",
             shoppingFlowConcept: "concept2",
+            landingContext: "default",
           };
 
           closeTray();
           clearShoppingFlowNotiTimer();
           hideShopNoti();
           activeShoppingFlowConcept = nextState.shoppingFlowConcept || "concept2";
+          activeLandingContext = nextState.landingContext || "default";
           currentConcept = nextState.concept || "concept2";
           currentHistoryConcept = nextState.historyConcept || currentConcept;
           updateConceptTabs();
@@ -2020,6 +2054,7 @@
           closeTray();
           clearShoppingFlowNotiTimer();
           hideShopNoti();
+          activeLandingContext = "default";
 
           if (entryKey === "concept1") {
             currentConcept = "concept1";
@@ -2309,6 +2344,7 @@
             'data-reward-id="' +
             rewardId +
             '" ' +
+            'data-reward-source="shopping-flow" ' +
             'data-xu="' +
             xuAmount +
             '" ' +
@@ -2385,6 +2421,7 @@
             'data-reward-id="' +
             rewardId +
             '" ' +
+            'data-reward-source="shopping-flow" ' +
             'data-xu="' +
             xuAmount +
             '" ' +
@@ -2451,9 +2488,11 @@
 
           if (activeShoppingFlowConcept === "concept1") {
             appendConcept1RewardFromShoppingFlow();
+            activeLandingContext = getFlowReturnContextForConcept("concept1");
             currentConcept = "concept1";
           } else {
             appendConcept2RewardFromShoppingFlow();
+            activeLandingContext = getFlowReturnContextForConcept("concept2");
             currentConcept = "concept2";
           }
 
@@ -2601,6 +2640,12 @@
         function getClaimableRows(concept) {
           return concept.rewardRows.filter(function (row) {
             return row.dataset.rowType === "claim";
+          });
+        }
+
+        function getVisibleClaimableRows(concept) {
+          return getClaimableRows(concept).filter(function (row) {
+            return !row.classList.contains("is-hidden") && !row.classList.contains("is-context-hidden");
           });
         }
 
@@ -2836,9 +2881,12 @@
             return;
           }
 
-          if (concept.claimedRewardIds.size === getClaimableRows(concept).length) {
+          if (getVisibleClaimableRows(concept).length === 0) {
             concept.rewardDoneState.classList.add("is-visible");
+            return;
           }
+
+          concept.rewardDoneState.classList.remove("is-visible");
         }
 
         function appendHistoryEntry(concept, row) {
