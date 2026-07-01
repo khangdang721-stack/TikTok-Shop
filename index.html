@@ -1773,7 +1773,9 @@
         let activeShoppingFlowConcept = "concept2";
         let activeLandingContext = "default";
         let activeTraySrc = "";
+        let activeTrayType = "";
         let pendingTrayPayload = null;
+        let pendingPostTrayAction = null;
         let trayCloseTimerId = 0;
         const trayAssetCache = new Map();
 
@@ -1910,7 +1912,7 @@
           trayOverlay.setAttribute("aria-hidden", "false");
         }
 
-        async function openTrayImage(imageSrc, imageAlt) {
+        async function openTrayImage(imageSrc, imageAlt, trayType) {
           clearTrayCloseTimer();
 
           if (tray.classList.contains("is-open")) {
@@ -1921,6 +1923,7 @@
             pendingTrayPayload = {
               imageSrc: imageSrc,
               imageAlt: imageAlt,
+              trayType: trayType || "",
             };
             closeTray();
             return;
@@ -1928,33 +1931,35 @@
 
           await loadTrayAsset(imageSrc);
           applyTrayPayload(imageSrc, imageAlt);
+          activeTrayType = trayType || "";
           showTrayShell();
         }
 
-        async function openPriorityTrayImage(imageSrc, imageAlt) {
+        async function openPriorityTrayImage(imageSrc, imageAlt, trayType) {
           clearTrayCloseTimer();
           pendingTrayPayload = null;
           await loadTrayAsset(imageSrc);
           applyTrayPayload(imageSrc, imageAlt);
+          activeTrayType = trayType || "";
           showTrayShell();
         }
 
         function openInfoTray() {
-          openTrayImage("Assets/Tray-1.png", "Thông tin hoàn xu");
+          openTrayImage("Assets/Tray-1.png", "Thông tin hoàn xu", "info");
         }
 
         function openMilestoneTray(level) {
           if (level === 10) {
-            openPriorityTrayImage("Assets/Tray-Milestone-3.png", "Thông báo hoàn thành mốc 10 lần hoàn xu");
+            openPriorityTrayImage("Assets/Tray-Milestone-3.png", "Thông báo hoàn thành mốc 10 lần hoàn xu", "milestone");
             return;
           }
 
           if (level === 3) {
-            openPriorityTrayImage("Assets/Tray-Milestone-2.png", "Thông báo hoàn thành mốc 3 lần hoàn xu");
+            openPriorityTrayImage("Assets/Tray-Milestone-2.png", "Thông báo hoàn thành mốc 3 lần hoàn xu", "milestone");
             return;
           }
 
-          openPriorityTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu");
+          openPriorityTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu", "milestone");
         }
 
         function closeTray() {
@@ -1969,14 +1974,20 @@
 
             if (!pendingTrayPayload) {
               activeTraySrc = "";
+              activeTrayType = "";
               trayImage.removeAttribute("src");
               trayImage.alt = "";
+              const postTrayAction = pendingPostTrayAction;
+              pendingPostTrayAction = null;
+              if (typeof postTrayAction === "function") {
+                postTrayAction();
+              }
               return;
             }
 
             const nextTrayPayload = pendingTrayPayload;
             pendingTrayPayload = null;
-            openTrayImage(nextTrayPayload.imageSrc, nextTrayPayload.imageAlt);
+            openTrayImage(nextTrayPayload.imageSrc, nextTrayPayload.imageAlt, nextTrayPayload.trayType);
           }, 220);
         }
 
@@ -2925,6 +2936,8 @@
             await animateMilestoneUnlock(milestone.image);
             openMilestoneTray(milestone.level);
           }
+
+          return unlockedMilestones.length;
         }
 
         async function updateAnimatedTotals(concept, mode) {
@@ -2977,15 +2990,10 @@
           if (concept.key === "concept2") {
             const claimedAt = new Date();
             const rewardId = row.dataset.rewardId || "";
-            const transferSeconds = Number(row.dataset.transferSeconds || 0);
             const claimedMeta = {
               claimedAt: claimedAt,
               claimedAtLabel: formatDisplayDate(claimedAt),
             };
-
-            if (transferSeconds > 0) {
-              claimedMeta.releaseEndsAt = claimedAt.getTime() + transferSeconds * 1000;
-            }
 
             concept.claimedRewardMetaById[rewardId] = claimedMeta;
             return;
@@ -3055,8 +3063,10 @@
 
         function startConcept2Transfer(concept, row) {
           const rewardId = row.dataset.rewardId || "";
+          const transferSeconds = Number(row.dataset.transferSeconds || 0);
+          const claimedMeta = concept.claimedRewardMetaById[rewardId];
 
-          if (!rewardId) {
+          if (!rewardId || !claimedMeta || transferSeconds <= 0) {
             return;
           }
 
@@ -3065,6 +3075,7 @@
             concept.transferTimerId = 0;
           }
 
+          claimedMeta.releaseEndsAt = Date.now() + transferSeconds * 1000;
           concept.activeTransferRewardId = rewardId;
           renderConcept2TransferInform(concept);
 
@@ -3120,16 +3131,22 @@
             await runClaimTotalUpdate(concept);
             await claimCoinAnimation;
 
-            if (concept.key === "concept2" && Number(row.dataset.transferSeconds || 0) > 0) {
-              startConcept2Transfer(concept, row);
-            }
-
             row.classList.add("is-claiming");
             window.setTimeout(async function () {
               row.classList.add("is-hidden");
               updateDoneState(concept);
               await wait(300);
-              await updateMilestones(concept);
+              const unlockedMilestoneCount = await updateMilestones(concept);
+
+              if (concept.key === "concept2" && Number(row.dataset.transferSeconds || 0) > 0) {
+                if (unlockedMilestoneCount > 0 && tray.classList.contains("is-open") && activeTrayType === "milestone") {
+                  pendingPostTrayAction = function () {
+                    startConcept2Transfer(concept, row);
+                  };
+                } else {
+                  startConcept2Transfer(concept, row);
+                }
+              }
             }, 240);
           });
         }
