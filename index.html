@@ -1331,38 +1331,19 @@
                     </button>
                   </article>
 
-                  <article
-                    class="zlp-reward-row zlp-reward-row--countdown"
-                    data-concept="concept1"
-                    data-reward-id="reward-2725"
-                    data-reward-source="default"
-                    data-xu="2725"
-                    data-order-amount="545.000đ"
-                    data-history-wait-days="2"
-                    data-history-payment-date="28/06/2026"
-                    data-row-type="countdown"
-                  >
-                    <div class="zlp-reward-copy">
-                      <h3 class="zlp-reward-title">Hoàn 2.725 xu</h3>
-                      <p class="zlp-reward-order">Đơn hàng 545.000đ</p>
-                    </div>
-
-                    <div class="zlp-reward-status" aria-label="Trạng thái chờ nhận còn 2 ngày">
-                      <div class="zlp-reward-status-top">
-                        <span>Chờ nhận</span>
-                        <button
-                          class="zlp-reward-status-info"
-                          type="button"
-                          aria-label="Thông tin trạng thái chờ nhận 2 ngày"
-                        >
-                          i
-                        </button>
-                      </div>
-                      <div class="zlp-reward-status-chip">Còn 2 ngày</div>
-                    </div>
-                  </article>
-
                 </div>
+                <img
+                  class="zlp-reward-done-state"
+                  id="zlp-concept-1-reward-done-state"
+                  src="Assets/Group - card -done.png"
+                  alt="Bạn đã nhận hết lượt hoàn xu rồi"
+                />
+                <button
+                  class="zlp-done-shop-button"
+                  id="zlp-concept-1-done-shop-button"
+                  type="button"
+                  aria-label="Mua sắm ngay từ trạng thái đã nhận hết card ở Concept 1"
+                ></button>
               </section>
 
               <section class="zlp-body-section" aria-label="Ưu đãi cho bạn ở Concept 1">
@@ -1708,6 +1689,7 @@
         const tiktokShopScreen = document.getElementById("zlp-tiktok-shop-screen");
         const flowShopButtons = Array.from(document.querySelectorAll("[data-flow-shop-trigger]"));
         const bodyTabButtons = Array.from(document.querySelectorAll("[data-body-tab-button]"));
+        const concept1DoneShopButton = document.getElementById("zlp-concept-1-done-shop-button");
         const concept2DoneShopButton = document.getElementById("zlp-concept-2-done-shop-button");
         const shopNoti = document.getElementById("zlp-shop-noti");
         const shopNotiButton = document.getElementById("zlp-shop-noti-button");
@@ -1735,7 +1717,7 @@
             earnedNumber: document.getElementById("zlp-concept-1-earned-number"),
             coinReceiveTarget: document.querySelector("#zlp-concept-1-screen .zlp-coin-earned"),
             pendingNumber: null,
-            rewardDoneState: null,
+            rewardDoneState: document.getElementById("zlp-concept-1-reward-done-state"),
             rewardList: document.querySelector('#zlp-concept-1-screen [aria-label="Danh sách nhiệm vụ nhận xu Concept 1"]'),
             historyOpenButton: document.getElementById("zlp-concept-1-history-open"),
             earnedInfoButton: document.getElementById("zlp-concept-1-earned-info"),
@@ -1745,7 +1727,7 @@
             claimedRewardMetaById: {},
             historyTab: "all",
             totalMode: "earned",
-            showDoneState: false,
+            showDoneState: true,
             activeBodyTab: "redeemNow",
             dynamicRewardCounter: 0,
           },
@@ -3110,6 +3092,12 @@
         flowShopButtons.forEach(function (button) {
           button.addEventListener("click", openTikTokShopFlow);
         });
+        if (concept1DoneShopButton) {
+          concept1DoneShopButton.addEventListener("click", function () {
+            activeShoppingFlowConcept = "concept1";
+            openTikTokShopFlow();
+          });
+        }
         if (concept2DoneShopButton) {
           concept2DoneShopButton.addEventListener("click", function () {
             activeShoppingFlowConcept = "concept2";
