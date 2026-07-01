@@ -2631,6 +2631,12 @@
           });
         }
 
+        function getVisibleRewardRows(concept) {
+          return concept.rewardRows.filter(function (row) {
+            return !row.classList.contains("is-hidden") && !row.classList.contains("is-context-hidden");
+          });
+        }
+
         function getClaimedXuTotal(concept) {
           let total = 0;
 
@@ -2863,7 +2869,7 @@
             return;
           }
 
-          if (getVisibleClaimableRows(concept).length === 0) {
+          if (getVisibleRewardRows(concept).length === 0) {
             concept.rewardDoneState.classList.add("is-visible");
             return;
           }
