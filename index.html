@@ -1,0 +1,3103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZLP Landing Concepts</title>
+    <style>
+      /* =========================================================
+         ZLP Landing Concepts
+         Static HTML/CSS prototype. Open directly with Live Server.
+         ========================================================= */
+
+      :root {
+        --zlp-page-bg: #2f3136;
+        --zlp-screen-bg: #eff8ff;
+        --zlp-body-bg: #ffffff;
+        --zlp-text: #001f3f;
+        --zlp-muted: #6e8195;
+        --zlp-primary: #0048d9;
+        --zlp-section-border: #ffe123;
+        --zlp-section-accent: #9ed0ff;
+        --zlp-card-radius: 16px;
+        --zlp-frame-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      }
+
+      /* Global mobile-fluid baseline. */
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        overflow-x: hidden;
+      }
+
+      body {
+        color: var(--zlp-text);
+        background: var(--zlp-screen-bg);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      /* App root: full-width on mobile, centered phone preview on desktop. */
+      .zlp-app {
+        width: 100%;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .zlp-preview-stack {
+        width: 100%;
+      }
+
+      .zlp-device-shell {
+        width: 100%;
+        min-height: 100vh;
+        background: var(--zlp-body-bg);
+      }
+
+      .zlp-screen {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: var(--zlp-body-bg);
+      }
+
+      .zlp-banner img,
+      .zlp-body-image,
+      .zlp-body-panel-image,
+      .zlp-body-header-image {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+      }
+
+      .zlp-screen-view {
+        width: 100%;
+      }
+
+      .zlp-screen-view--with-nav {
+        position: relative;
+      }
+
+      .zlp-screen-view.is-hidden {
+        display: none;
+      }
+
+      .zlp-top-navigation {
+        position: absolute;
+        top: 44px;
+        left: 0;
+        right: 0;
+        z-index: 8;
+        pointer-events: none;
+      }
+
+      .zlp-top-navigation-image {
+        width: 100%;
+        height: auto;
+      }
+
+      .zlp-home-screen {
+        min-height: 100vh;
+        background: #f6f9ff;
+      }
+
+      .zlp-home-main {
+        padding: 72px 16px 24px;
+      }
+
+      .zlp-home-eyebrow {
+        margin: 0;
+        color: #6f839a;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .zlp-home-title {
+        margin: 10px 0 0;
+        color: #0b2d56;
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.04;
+      }
+
+      .zlp-home-subtitle {
+        margin: 10px 0 0;
+        color: #7f90a5;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .zlp-home-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .zlp-home-entry {
+        width: 100%;
+        padding: 18px 18px 16px;
+        border: 1px solid #dfebfb;
+        border-radius: 20px;
+        background: #ffffff;
+        text-align: left;
+        cursor: pointer;
+        box-shadow: 0 10px 22px rgba(0, 31, 63, 0.05);
+      }
+
+      .zlp-home-entry-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0;
+        color: #0b2d56;
+        font-size: 18px;
+        font-weight: 760;
+        line-height: 1.15;
+      }
+
+      .zlp-home-entry-arrow {
+        color: #1142d4;
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .zlp-home-entry-copy {
+        margin: 8px 0 0;
+        color: #7f90a5;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .zlp-static-screen {
+        position: relative;
+        min-height: 100vh;
+        background: #ffffff;
+      }
+
+      /* Top banner is the first visual section. */
+      .zlp-banner {
+        position: relative;
+        width: 100%;
+        background: #05d982;
+      }
+
+      /* Light content panel overlaps the bottom of the banner. */
+      .zlp-main {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        margin-top: -16px;
+        padding: 17px 16px 0;
+        border-radius: 12px 12px 0 0;
+        background: var(--zlp-screen-bg);
+      }
+
+      .zlp-main--concept-1 {
+        padding-top: 19px;
+      }
+
+      .zlp-main--shopping {
+        margin-top: 0;
+        padding: 0 0 0;
+        border-radius: 0;
+        background: #ffffff;
+      }
+
+      /* Coincard shell rebuilt in HTML so counters can update live. */
+      .zlp-coin-card {
+        position: relative;
+        width: 100%;
+        min-height: 76px;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #ffffff;
+      }
+
+      .zlp-coin-card--concept-1 {
+        min-height: 0px;
+        padding: 12px 12px 12px;
+      }
+
+      .zlp-coin-title {
+        position: absolute;
+        top: 16px;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .zlp-coin-title--left {
+        left: 12px;
+      }
+
+      .zlp-coin-title--right {
+        left: 55%;
+        font-weight: 500;
+      }
+
+      .zlp-coin-title-static {
+        margin: 0;
+        color: #0b2d56;
+        font-size: 16px;
+        font-weight: 750;
+        line-height: 1;
+      }
+
+      .zlp-coin-earned {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .zlp-coin-card--concept-1 .zlp-coin-earned {
+        position: static;
+        margin-top: 16px;
+      }
+
+      .zlp-coin-earned-icon {
+        width: 24px;
+        height: 24px;
+        flex: 0 0 auto;
+      }
+
+      .zlp-coin-earned-value {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 24px;
+      }
+
+      .zlp-coin-info,
+      .zlp-reward-status-info {
+        display: inline-flex;
+        width: 16px;
+        height: 16px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid #7e8da3;
+        border-radius: 50%;
+        background: transparent;
+        color: #7e8da3;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .zlp-coin-info {
+        cursor: pointer;
+      }
+
+      .zlp-coin-pending {
+        position: absolute;
+        left: 55%;
+        bottom: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #001f3f;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .zlp-coin-pending-icon {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 auto;
+      }
+
+      .zlp-animated-number-slot {
+        position: relative;
+        display: inline-flex;
+        min-height: 24px;
+        align-items: center;
+      }
+
+      .zlp-animated-number {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        white-space: nowrap;
+      }
+
+      .zlp-animated-number-char {
+        display: inline-block;
+        white-space: pre;
+        backface-visibility: hidden;
+        will-change: transform, opacity;
+      }
+
+      .zlp-coin-pending-value {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 3px;
+        white-space: nowrap;
+      }
+
+      .zlp-coin-pending-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: #001f3f;
+      }
+
+      .zlp-coin-earned-number {
+        font-size: 24px;
+        font-weight: 750;
+        color: #ff9300;
+      }
+
+      .zlp-coin-pending-unit {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .zlp-coin-move {
+        position: absolute;
+        top: 24px;
+        left: 48%;
+        width: 16px;
+        height: 16px;
+        transform: translateX(-50%);
+        animation: zlp-move-attention 7s infinite;
+        transform-origin: center center;
+      }
+
+      @keyframes zlp-move-attention {
+        0% {
+          transform: translateX(-50%);
+        }
+
+        10% {
+          transform: translateX(-66%);
+        }
+
+        24% {
+          transform: translateX(-36%);
+        }
+
+        38% {
+          transform: translateX(-62%);
+        }
+
+        52% {
+          transform: translateX(-40%);
+        }
+
+        71.5% {
+          transform: translateX(-50%);
+        }
+
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      .zlp-coin-history {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .zlp-coin-history-button {
+        position: absolute;
+        top: 10px;
+        right: 13px;
+        width: 28px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .zlp-coin-card--concept-1 .zlp-coin-history-button {
+        top: 17px;
+        right: 17px;
+      }
+
+      /* History opens as a full-screen in-app page. */
+      .zlp-history-screen {
+        position: absolute;
+        inset: 0;
+        z-index: 30;
+        overflow-y: auto;
+        background: #ffffff;
+      }
+
+      .zlp-history-nav {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background: #ffffff;
+      }
+
+      .zlp-history-nav-image {
+        width: 100%;
+        height: auto;
+      }
+
+      .zlp-history-back {
+        position: absolute;
+        left: 6px;
+        top: 52px;
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .zlp-history-content {
+        padding-top: 6px;
+      }
+
+      .zlp-history-header {
+        padding: 0 0 0;
+      }
+
+      .zlp-history-heading {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .zlp-history-tabs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border-bottom: 1px solid #e6edf7;
+      }
+
+      .zlp-history-tab {
+        position: relative;
+        min-height: 64px;
+        border: 0;
+        background: transparent;
+        color: #7a899d;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.1;
+        transition: color 180ms ease;
+      }
+
+      .zlp-history-tab.is-active {
+        color: #1142d4;
+      }
+
+      .zlp-history-tab.is-active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 4px;
+        background: #1142d4;
+      }
+
+      .zlp-history-summary {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 14px;
+        margin: 0;
+        padding: 16px 16px 0;
+      }
+
+      .zlp-history-summary-copy {
+        min-width: 0;
+      }
+
+      .zlp-history-month-title {
+        margin: 0;
+        color: #0b2d56;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.1;
+      }
+
+      .zlp-history-month-total {
+        margin: 8px 0 0;
+        color: #8a99ac;
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .zlp-history-month-total strong {
+        color: #0b2d56;
+      }
+
+      .zlp-history-list {
+        padding: 18px 16px 28px;
+      }
+
+      .zlp-history-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 0;
+        border-bottom: 1px solid #edf2fa;
+      }
+
+      .zlp-history-item-copy {
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .zlp-history-item-order {
+        margin: 0;
+        color: #0b2d56;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.1;
+      }
+
+      .zlp-history-item-date {
+        margin: 10px 0 0;
+        color: #8fa0b4;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .zlp-history-item-status {
+        flex: 0 0 auto;
+        min-width: 112px;
+        text-align: right;
+      }
+
+      .zlp-history-item-xu {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        color: #0b2d56;
+        font-size: 14px;
+        font-weight: 750;
+        line-height: 1;
+      }
+
+      .zlp-history-item-xu-icon {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 auto;
+      }
+
+      .zlp-history-item-state {
+        margin: 10px 0 0;
+        color: #0b2d56;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .zlp-history-item-state--done {
+        color: #18c46b;
+      }
+
+      .zlp-history-empty {
+        display: none;
+        padding: 28px 16px 0;
+      }
+
+      .zlp-history-empty.is-visible {
+        display: block;
+      }
+
+      .zlp-history-empty-card {
+        padding: 28px 18px;
+        border-radius: 20px;
+        background: #ffffff;
+        text-align: center;
+      }
+
+      .zlp-history-empty-title {
+        margin: 0;
+        color: #0b2d56;
+        font-size: 14px;
+        font-weight: 0;
+        line-height: 1.2;
+      }
+
+      .zlp-history-empty-text {
+        display: none;
+      }
+
+      .zlp-history-list.is-hidden {
+        display: none;
+      }
+
+      /* Flying coin burst sits above the prototype UI without affecting layout. */
+      .zlp-coin-burst-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 35;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .zlp-flying-coin {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+        will-change: transform, opacity;
+        pointer-events: none;
+      }
+
+      /* Shared info tray for Xu da hoan. */
+      .zlp-tray-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 40;
+        background: rgba(0, 31, 62, 0.8);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+      }
+
+      .zlp-tray-overlay.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .zlp-tray {
+        position: fixed;
+        bottom: 32px;
+        left: 16px;
+        right: 16px;
+        z-index: 41;
+        opacity: 0;
+        transform: translateY(28px);
+        pointer-events: none;
+        transition: opacity 220ms ease, transform 220ms ease;
+      }
+
+      .zlp-tray.is-open {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .zlp-tray-image {
+        width: 100%;
+        height: auto;
+      }
+
+      .zlp-tray-close {
+        position: absolute;
+        top: 22px;
+        right: 22px;
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      /* Reward section uses assets for the visual shell and HTML for interaction. */
+      .zlp-reward-section {
+        position: relative;
+        width: 100%;
+        margin-top: 18px;
+        padding: 19px 11px 14px;
+        border: 1px solid var(--zlp-section-border);
+        border-left-color: var(--zlp-section-accent);
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(0, 73, 151, 0.05);
+      }
+
+      .zlp-reward-header {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+      }
+
+      .zlp-mission-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        align-items: flex-start;
+        gap: 18px;
+        margin-top: 16px;
+      }
+
+      .zlp-mission-card {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+      }
+
+      .zlp-mission-card.is-unlocking {
+        transform-origin: center center;
+      }
+
+      .zlp-inform {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        margin-top: 18px;
+      }
+
+      .zlp-reward-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 12px;
+      }
+
+      .zlp-reward-done-state {
+        display: none;
+        width: 100%;
+        margin-top: 12px;
+      }
+
+      .zlp-reward-done-state.is-visible {
+        display: block;
+      }
+
+      .zlp-reward-row {
+        display: flex;
+        min-height: 80px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 16px;
+        border: 1px solid #edf2f7;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(0, 31, 63, 0.03);
+        transform: scale(1);
+        transform-origin: center center;
+        transition: transform 500ms cubic-bezier(0.83, 0, 0.17, 1);
+      }
+
+      .zlp-reward-row.is-claiming {
+        transform: scale(0);
+      }
+
+      .zlp-reward-row.is-hidden {
+        display: none;
+      }
+
+      .zlp-reward-copy {
+        min-width: 0;
+      }
+
+      .zlp-reward-title {
+        margin: 0;
+        color: #0b2d56;
+        font-size: 14px;
+        font-weight: 750;
+        line-height: 1.12;
+        letter-spacing: 0;
+      }
+
+      .zlp-reward-order {
+        margin: 6px 0 0;
+        color: #9eacbd;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      .zlp-reward-wait {
+        margin: 8px 0 0;
+        color: #ff8d00;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .zlp-claim-button {
+        flex: 0 0 auto;
+        width: 108px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .zlp-claim-button img {
+        display: block;
+        width: 90%;
+        height: auto;
+      }
+
+      .zlp-claim-button:disabled {
+        cursor: default;
+      }
+
+      .zlp-done-shop-button {
+        display: none;
+        position: absolute;
+        left: 7%;
+        right: 7%;
+        bottom: 10px;
+        height: 72px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .zlp-reward-done-state.is-visible + .zlp-done-shop-button {
+        display: block;
+      }
+
+      .zlp-reward-row--countdown {
+        align-items: center;
+      }
+
+      .zlp-reward-status {
+        flex: 0 0 auto;
+        min-width: 118px;
+        text-align: right;
+        display:flex;
+        flex-direction:column;
+      
+      }
+
+      .zlp-reward-status-top {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        color: #0b2d56;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .zlp-reward-status-chip {
+        display: inline-flex;
+        min-height: 20px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+        padding: 0 14px;
+        border-radius: 4px;
+        background: #fff6d3;
+        color: #ff8d00;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .zlp-transfer-inform {
+        display: none;
+        align-items: center;
+        margin-top: 8px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        background: #FFFFFF;
+      }
+
+      .zlp-transfer-inform.is-visible {
+        display: flex;
+      }
+
+      .zlp-transfer-inform-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0;
+        color: #001f3e;
+        font-size: 14px;
+        font-weight: 750;
+        line-height: 1.15;
+      }
+
+      .zlp-transfer-inform-highlight {
+        color: #001f3e;
+      }
+
+      .zlp-transfer-inform-coin {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 auto;
+      }
+
+      /* Bottom body artwork sits directly under the reward section. */
+      .zlp-body-section {
+        width: calc(100% + 32px);
+        margin: 31px -16px 0;
+        background: var(--zlp-body-bg);
+      }
+
+      .zlp-body-tabs-shell {
+        padding: 20px 16px 20px;
+        background: #ffffff;
+      }
+
+      .zlp-body-header {
+        width: 100%;
+        background: #ffffff;
+      }
+
+      .zlp-body-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        min-height: 56px;
+        margin-top: 14px;
+        padding: 3px;
+        border-radius: 999px;
+        background: #eff4fb;
+      }
+
+      .zlp-body-tab {
+        min-height: 44px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #72849a;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+        letter-spacing: 0;
+        white-space: nowrap;
+        transition: background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+      }
+
+      .zlp-body-tab.is-active {
+        background: #ffffff;
+        color: #0f43d6;
+        font-weight: 700;
+      }
+
+      .zlp-body-panels {
+        margin-top: 12px;
+      }
+
+      .zlp-body-panel {
+        display: none;
+      }
+
+      .zlp-body-panel.is-active {
+        display: block;
+      }
+
+      .zlp-flow-banner,
+      .zlp-flow-voucher-section,
+      .zlp-flow-bottom-button,
+      .zlp-shop-image,
+      .zlp-noti-image {
+        width: 100%;
+        height: auto;
+      }
+
+      .zlp-flow-screen {
+        position: relative;
+        background: #ffffff;
+      }
+
+      .zlp-flow-reward-section {
+        width: calc(100% - 32px);
+        margin: 16px 16px 0;
+        padding: 18px 12px 14px;
+        border: 1px solid #ffe123;
+        border-left-color: #9ed0ff;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(0, 73, 151, 0.05);
+      }
+
+      .zlp-flow-reward-header,
+      .zlp-flow-mission-list,
+      .zlp-flow-inform,
+      .zlp-flow-empty-card {
+        width: 100%;
+        height: auto;
+      }
+
+      .zlp-flow-mission-list,
+      .zlp-flow-inform,
+      .zlp-flow-empty-card {
+        margin-top: 14px;
+      }
+
+      .zlp-flow-inform {
+        display: block;
+      }
+
+      .zlp-flow-voucher-wrap,
+      .zlp-flow-bottom-wrap,
+      .zlp-shop-screen {
+        position: relative;
+      }
+
+      .zlp-flow-voucher-button {
+        position: absolute;
+        right: 6%;
+        width: 30%;
+        height: 18.5%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .zlp-flow-voucher-button--top {
+        top: 27%;
+      }
+
+      .zlp-flow-voucher-button--bottom {
+        top: 60%;
+      }
+
+      .zlp-flow-bottom-button-hit {
+        position: absolute;
+        left: 4%;
+        right: 4%;
+        bottom: 12%;
+        height: 58%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .zlp-shop-noti {
+        position: absolute;
+        top: 0;
+        left: 12px;
+        right: 12px;
+        z-index: 12;
+        opacity: 0;
+        transform: translateY(-110%);
+        pointer-events: none;
+        transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+      }
+
+      .zlp-shop-noti.is-visible {
+        opacity: 1;
+        transform: translateY(12px);
+        pointer-events: auto;
+      }
+
+      .zlp-shop-noti-button {
+        position: absolute;
+        inset: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      /* Minimal reusable patterns kept from the starter for future edits. */
+      .zlp-button {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      .zlp-card {
+        width: 100%;
+        border-radius: var(--zlp-card-radius);
+        background: #ffffff;
+      }
+
+      /* Desktop preview shell: lock the mobile UI to a 375px phone frame. */
+      @media (min-width: 768px) {
+        body {
+          background: var(--zlp-page-bg);
+        }
+
+        .zlp-app {
+          display: flex;
+          min-height: 100vh;
+          align-items: flex-start;
+          justify-content: center;
+          padding: 24px 0;
+        }
+
+        .zlp-preview-stack {
+          width: 375px;
+        }
+
+        .zlp-device-shell {
+          width: 375px;
+          max-width: 375px;
+          min-height: 812px;
+          overflow: hidden;
+          border-radius: 42px;
+          box-shadow: var(--zlp-frame-shadow);
+        }
+
+        .zlp-screen {
+          min-height: 812px;
+        }
+
+        .zlp-history-screen {
+          min-height: 812px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .zlp-coin-move {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- App root: mobile full viewport, desktop phone-like frame. -->
+    <main class="zlp-app">
+      <div class="zlp-preview-stack">
+        <div class="zlp-device-shell">
+          <section class="zlp-screen" aria-label="ZLP landing concepts">
+
+          <div class="zlp-screen-view" id="zlp-home-screen">
+            <section class="zlp-static-screen zlp-home-screen" aria-label="Trang chọn entry point">
+              <div class="zlp-home-main">
+                <p class="zlp-home-eyebrow">Zalopay prototype</p>
+                <h1 class="zlp-home-title">TikTok Shop Test</h1>
+                <p class="zlp-home-subtitle">Chọn một trong các Scenario dưới đây để test.</p>
+
+                <div class="zlp-home-grid">
+                  <button class="zlp-home-entry" type="button" data-home-entry="concept1">
+                    <p class="zlp-home-entry-title">
+                      <span>Concept 1: Chờ và nhận</span>
+                      <span class="zlp-home-entry-arrow" aria-hidden="true">›</span>
+                    </p>
+                    <p class="zlp-home-entry-copy">User đã có đơn hàng và vào Tiktok Hub trong Zalopay.</p>
+                  </button>
+
+                  <button class="zlp-home-entry" type="button" data-home-entry="concept2">
+                    <p class="zlp-home-entry-title">
+                      <span>Concept 2: Nhận và chờ </span>
+                      <span class="zlp-home-entry-arrow" aria-hidden="true">›</span>
+                    </p>
+                    <p class="zlp-home-entry-copy">User đã có đơn hàng và vào Tiktok Hub trong Zalopay.</p>
+                  </button>
+
+                  <button class="zlp-home-entry" type="button" data-home-entry="flow-concept2">
+                    <p class="zlp-home-entry-title">
+                      <span>Flow mua sắm /Concept 2</span>
+                      <span class="zlp-home-entry-arrow" aria-hidden="true">›</span>
+                    </p>
+                    <p class="zlp-home-entry-copy">User chưa có đơn hàng nào.</p>
+                  </button>
+
+                  <button class="zlp-home-entry" type="button" data-home-entry="flow-concept1">
+                    <p class="zlp-home-entry-title">
+                      <span>Flow mua sắm /Concept 1</span>
+                      <span class="zlp-home-entry-arrow" aria-hidden="true">›</span>
+                    </p>
+                    <p class="zlp-home-entry-copy">User chưa có đơn hàng nào.</p>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="zlp-screen-view zlp-screen-view--with-nav is-hidden" id="zlp-concept-1-screen">
+            <div class="zlp-top-navigation" aria-hidden="true">
+              <img class="zlp-top-navigation-image" src="Assets/Navigation Bar.png" alt="" />
+            </div>
+            <section class="zlp-banner" aria-label="Campaign banner">
+              <img src="Assets/Banner.png" alt="Càng mua càng lời combo voucher" />
+            </section>
+
+            <div class="zlp-main zlp-main--concept-1">
+              <!-- Concept 1 coin card only tracks earned xu. -->
+              <section class="zlp-coin-card zlp-coin-card--concept-1" aria-label="Concept 1 coin summary">
+                <p class="zlp-coin-title-static">Đã hoàn</p>
+
+                <div class="zlp-coin-earned" aria-label="Xu đã hoàn">
+                  <img class="zlp-coin-earned-icon" src="Assets/Coin.png" alt="" />
+                  <div class="zlp-coin-earned-value">
+                    <span class="zlp-animated-number-slot" id="zlp-concept-1-earned-number">
+                      <span class="zlp-animated-number zlp-coin-earned-number">0</span>
+                    </span>
+                    <button
+                      class="zlp-coin-info"
+                      id="zlp-concept-1-earned-info"
+                      type="button"
+                      aria-label="Thông tin xu đã hoàn của Concept 1"
+                    >
+                      i
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  class="zlp-coin-history-button"
+                  id="zlp-concept-1-history-open"
+                  type="button"
+                  aria-label="Mở lịch sử hoàn xu của Concept 1"
+                >
+                  <img class="zlp-coin-history" src="Assets/History.png" alt="" />
+                </button>
+              </section>
+
+              <section class="zlp-reward-section" aria-label="Nhận hoàn xu Concept 1">
+                <img class="zlp-reward-header" src="Assets/Header.png" alt="Nhận hoàn xu - mở khoá quà" />
+
+                <div class="zlp-mission-list" aria-label="Voucher milestones Concept 1">
+                  <img
+                    class="zlp-mission-card"
+                    id="zlp-concept-1-first-mission"
+                    src="Assets/1-locked.png"
+                    alt="Voucher 8%, 1 lần hoàn xu"
+                  />
+                  <img
+                    class="zlp-mission-card"
+                    id="zlp-concept-1-third-mission"
+                    src="Assets/3-locked.png"
+                    alt="Voucher 10%, 3 lần hoàn xu"
+                  />
+                  <img
+                    class="zlp-mission-card"
+                    id="zlp-concept-1-tenth-mission"
+                    src="Assets/10-locked.png"
+                    alt="Voucher 15%, 10 lần hoàn xu"
+                  />
+                </div>
+
+                <img class="zlp-inform" src="Assets/Inform-2.png" alt="Nhận xu sau 10 ngày từ lúc chốt đơn nha" />
+
+                <!-- Concept 1 keeps only the first reward claimable in v1. -->
+                <div class="zlp-reward-list" aria-label="Danh sách nhiệm vụ nhận xu Concept 1">
+                  <article
+                    class="zlp-reward-row"
+                    data-concept="concept1"
+                    data-reward-id="reward-500"
+                    data-xu="500"
+                    data-order-amount="100.000đ"
+                    data-history-wait-days="0"
+                    data-history-payment-date="24/06/2026"
+                    data-row-type="claim"
+                  >
+                    <div class="zlp-reward-copy">
+                      <h3 class="zlp-reward-title">Hoàn 500 xu</h3>
+                      <p class="zlp-reward-order">Đơn hàng 100.000đ</p>
+                    </div>
+
+                    <button class="zlp-claim-button" type="button" aria-label="Nhận xu cho hoàn 500 xu ở Concept 1">
+                      <img src="Assets/Buttons.png" alt="" />
+                    </button>
+                  </article>
+
+                  <article
+                    class="zlp-reward-row zlp-reward-row--countdown"
+                    data-concept="concept1"
+                    data-reward-id="reward-2725"
+                    data-xu="2725"
+                    data-order-amount="545.000đ"
+                    data-history-wait-days="2"
+                    data-history-payment-date="28/06/2026"
+                    data-row-type="countdown"
+                  >
+                    <div class="zlp-reward-copy">
+                      <h3 class="zlp-reward-title">Hoàn 2.725 xu</h3>
+                      <p class="zlp-reward-order">Đơn hàng 545.000đ</p>
+                    </div>
+
+                    <div class="zlp-reward-status" aria-label="Trạng thái chờ nhận còn 2 ngày">
+                      <div class="zlp-reward-status-top">
+                        <span>Chờ nhận</span>
+                        <button
+                          class="zlp-reward-status-info"
+                          type="button"
+                          aria-label="Thông tin trạng thái chờ nhận 2 ngày"
+                        >
+                          i
+                        </button>
+                      </div>
+                      <div class="zlp-reward-status-chip">Còn 2 ngày</div>
+                    </div>
+                  </article>
+
+                </div>
+              </section>
+
+              <section class="zlp-body-section" aria-label="Ưu đãi cho bạn ở Concept 1">
+                <!-- Body tabs stay editable in HTML and switch voucher artwork per concept. -->
+                <div class="zlp-body-tabs-shell">
+                  <div class="zlp-body-header">
+                    <img class="zlp-body-header-image" src="Assets/Header-ưu đãi.png" alt="Ưu đãi cho bạn" />
+                  </div>
+
+                  <div class="zlp-body-tabs" role="tablist" aria-label="Danh mục ưu đãi cho bạn ở Concept 1">
+                    <button
+                      class="zlp-body-tab is-active"
+                      type="button"
+                      role="tab"
+                      aria-selected="true"
+                      data-body-tab-button="redeemNow"
+                      data-body-tab-concept="concept1"
+                      aria-label="Đủ Xu đổi liền"
+                    >
+                      Đủ Xu đổi liền
+                    </button>
+                    <button
+                      class="zlp-body-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected="false"
+                      data-body-tab-button="boostVoucher"
+                      data-body-tab-concept="concept1"
+                      aria-label="Voucher tặng bạn"
+                    >
+                      Voucher tặng bạn
+                    </button>
+                  </div>
+
+                  <div class="zlp-body-panels">
+                    <div class="zlp-body-panel is-active" data-body-tab-panel="redeemNow" data-body-tab-concept="concept1">
+                      <img class="zlp-body-panel-image" src="Assets/Voucher-section-tab1.png" alt="Ưu đãi đủ xu đổi liền" />
+                    </div>
+                    <div class="zlp-body-panel" data-body-tab-panel="boostVoucher" data-body-tab-concept="concept1">
+                      <img class="zlp-body-panel-image" src="Assets/Voucher-section-tab2.png" alt="Ưu đãi voucher tặng bạn" />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="zlp-screen-view zlp-screen-view--with-nav" id="zlp-concept-2-screen">
+            <div class="zlp-top-navigation" aria-hidden="true">
+              <img class="zlp-top-navigation-image" src="Assets/Navigation Bar.png" alt="" />
+            </div>
+            <section class="zlp-banner" aria-label="Campaign banner">
+              <img src="Assets/Banner.png" alt="Càng mua càng lời combo voucher" />
+            </section>
+
+            <div class="zlp-main">
+              <!-- Concept 2 keeps the original earned/pending split. -->
+              <section class="zlp-coin-card" aria-label="Concept 2 coin summary">
+                <p class="zlp-coin-title zlp-coin-title--left">Đã hoàn</p>
+                <div class="zlp-coin-earned" aria-label="Xu đã hoàn">
+                  <img class="zlp-coin-earned-icon" src="Assets/Coin.png" alt="" />
+                  <div class="zlp-coin-earned-value">
+                    <span class="zlp-animated-number-slot" id="zlp-concept-2-earned-number">
+                      <span class="zlp-animated-number zlp-coin-earned-number">0</span>
+                    </span>
+                    <button
+                      class="zlp-coin-info"
+                      id="zlp-concept-2-earned-info"
+                      type="button"
+                      aria-label="Thông tin xu đã hoàn của Concept 2"
+                    >
+                      i
+                    </button>
+                  </div>
+                </div>
+
+                <img class="zlp-coin-move" src="Assets/move.png" alt="" />
+
+                <p class="zlp-coin-title zlp-coin-title--right">Chờ nhận</p>
+                <div class="zlp-coin-pending" aria-label="Xu chờ nhận">
+                  <img class="zlp-coin-pending-icon" src="Assets/xu-cho-icon.png" alt="" />
+                  <span class="zlp-coin-pending-value">
+                    <span class="zlp-animated-number-slot" id="zlp-concept-2-pending-number">
+                      <span class="zlp-animated-number zlp-coin-pending-number">0</span>
+                    </span>
+                    <span class="zlp-coin-pending-unit">xu</span>
+                  </span>
+                </div>
+
+                <button
+                  class="zlp-coin-history-button"
+                  id="zlp-concept-2-history-open"
+                  type="button"
+                  aria-label="Mở lịch sử hoàn xu của Concept 2"
+                >
+                  <img class="zlp-coin-history" src="Assets/History.png" alt="" />
+                </button>
+              </section>
+
+              <section class="zlp-transfer-inform" id="zlp-concept-2-transfer-inform" aria-live="polite">
+                <p class="zlp-transfer-inform-title">
+                  <span class="zlp-transfer-inform-highlight" id="zlp-concept-2-transfer-amount">+500</span>
+                  <img class="zlp-transfer-inform-coin" src="Assets/Coin.png" alt="" />
+                  sau
+                  <span class="zlp-transfer-inform-highlight" id="zlp-concept-2-transfer-countdown">5</span>
+                  <span>s</span>
+                </p>
+              </section>
+
+              <section class="zlp-reward-section" aria-label="Nhận hoàn xu Concept 2">
+                <img class="zlp-reward-header" src="Assets/Header.png" alt="Nhận hoàn xu - mở khoá quà" />
+
+                <div class="zlp-mission-list" aria-label="Voucher milestones Concept 2">
+                  <img
+                    class="zlp-mission-card"
+                    id="zlp-concept-2-first-mission"
+                    src="Assets/1-locked.png"
+                    alt="Voucher 8%, 1 lần hoàn xu"
+                  />
+                  <img
+                    class="zlp-mission-card"
+                    id="zlp-concept-2-third-mission"
+                    src="Assets/3-locked.png"
+                    alt="Voucher 10%, 3 lần hoàn xu"
+                  />
+                  <img
+                    class="zlp-mission-card"
+                    id="zlp-concept-2-tenth-mission"
+                    src="Assets/10-locked.png"
+                    alt="Voucher 15%, 10 lần hoàn xu"
+                  />
+                </div>
+
+                <img class="zlp-inform" src="Assets/Inform.png" alt="Xu về ví sau 10 ngày kể từ lúc chốt đơn nha" />
+
+                <div class="zlp-reward-list" aria-label="Danh sách nhiệm vụ nhận xu Concept 2">
+                  <article
+                    class="zlp-reward-row"
+                    data-concept="concept2"
+                    data-reward-id="reward-500"
+                    data-xu="500"
+                    data-order-amount="100.000đ"
+                    data-history-ready="true"
+                    data-transfer-seconds="5"
+                    data-row-type="claim"
+                  >
+                    <div class="zlp-reward-copy">
+                      <h3 class="zlp-reward-title">Hoàn 500 xu</h3>
+                      <p class="zlp-reward-order">Đơn hàng 100.000đ</p>
+                    </div>
+
+                    <button class="zlp-claim-button" type="button" aria-label="Nhận xu cho hoàn 500 xu ở Concept 2">
+                      <img src="Assets/Buttons.png" alt="" />
+                    </button>
+                  </article>
+                </div>
+
+                <img
+                  class="zlp-reward-done-state"
+                  id="zlp-concept-2-reward-done-state"
+                  src="Assets/Group - card -done.png"
+                  alt="Bạn đã nhận hết lượt hoàn xu rồi"
+                />
+                <button
+                  class="zlp-done-shop-button"
+                  id="zlp-concept-2-done-shop-button"
+                  type="button"
+                  aria-label="Mua sắm ngay từ trạng thái đã nhận hết card"
+                ></button>
+              </section>
+
+              <section class="zlp-body-section" aria-label="Ưu đãi cho bạn ở Concept 2">
+                <!-- Concept 2 uses the same body tabs, but keeps its tab state independent. -->
+                <div class="zlp-body-tabs-shell">
+                  <div class="zlp-body-header">
+                    <img class="zlp-body-header-image" src="Assets/Header-ưu đãi.png" alt="Ưu đãi cho bạn" />
+                  </div>
+
+                  <div class="zlp-body-tabs" role="tablist" aria-label="Danh mục ưu đãi cho bạn ở Concept 2">
+                    <button
+                      class="zlp-body-tab is-active"
+                      type="button"
+                      role="tab"
+                      aria-selected="true"
+                      data-body-tab-button="redeemNow"
+                      data-body-tab-concept="concept2"
+                      aria-label="Đủ Xu đổi liền"
+                    >
+                      Đủ Xu đổi liền
+                    </button>
+                    <button
+                      class="zlp-body-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected="false"
+                      data-body-tab-button="boostVoucher"
+                      data-body-tab-concept="concept2"
+                      aria-label="Voucher tặng bạn"
+                    >
+                      Voucher tặng bạn
+                    </button>
+                  </div>
+
+                  <div class="zlp-body-panels">
+                    <div class="zlp-body-panel is-active" data-body-tab-panel="redeemNow" data-body-tab-concept="concept2">
+                      <img class="zlp-body-panel-image" src="Assets/Voucher-section-tab1.png" alt="Ưu đãi đủ xu đổi liền" />
+                    </div>
+                    <div class="zlp-body-panel" data-body-tab-panel="boostVoucher" data-body-tab-concept="concept2">
+                      <img class="zlp-body-panel-image" src="Assets/Voucher-section-tab2.png" alt="Ưu đãi voucher tặng bạn" />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="zlp-screen-view zlp-screen-view--with-nav is-hidden" id="zlp-flow-screen">
+            <div class="zlp-top-navigation" aria-hidden="true">
+              <img class="zlp-top-navigation-image" src="Assets/Navigation Bar.png" alt="" />
+            </div>
+            <section class="zlp-static-screen zlp-flow-screen" aria-label="Flow mua sắm">
+              <div class="zlp-main zlp-main--shopping">
+                <img class="zlp-flow-banner" src="Assets/Banner-2.png" alt="Mua sắm TikTok nhận xu đổi voucher" />
+
+                <div class="zlp-flow-voucher-wrap">
+                  <img class="zlp-flow-voucher-section" src="Assets/Section-voucher.png" alt="Voucher mua sắm cho bạn" />
+                  <button
+                    class="zlp-flow-voucher-button zlp-flow-voucher-button--top"
+                    data-flow-shop-trigger="voucher-top"
+                    type="button"
+                    aria-label="Dùng ngay voucher mua sắm đầu tiên"
+                  ></button>
+                  <button
+                    class="zlp-flow-voucher-button zlp-flow-voucher-button--bottom"
+                    data-flow-shop-trigger="voucher-bottom"
+                    type="button"
+                    aria-label="Dùng ngay voucher mua sắm thứ hai"
+                  ></button>
+                </div>
+
+                <section class="zlp-flow-reward-section" aria-label="Nhận hoàn xu trong flow mua sắm">
+                  <img class="zlp-flow-reward-header" src="Assets/Header.png" alt="Nhận hoàn xu - mở khoá quà" />
+                  <img class="zlp-flow-mission-list" src="Assets/List card mission.png" alt="Danh sách milestone nhận hoàn xu" />
+                  <img
+                    class="zlp-flow-inform"
+                    id="zlp-flow-inform"
+                    src="Assets/Inform-2.png"
+                    alt="Nhận xu sau 10 ngày từ lúc chốt đơn nha"
+                  />
+                  <img class="zlp-flow-empty-card" src="Assets/Card-chuacodon.png" alt="Chưa có đơn hàng hoàn xu" />
+                </section>
+
+                <div class="zlp-flow-bottom-wrap">
+                  <img class="zlp-flow-bottom-button" src="Assets/Button-Muasamngay.png" alt="Mua sắm ngay" />
+                  <button
+                    class="zlp-flow-bottom-button-hit"
+                    data-flow-shop-trigger="bottom-cta"
+                    type="button"
+                    aria-label="Mua sắm ngay"
+                  ></button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="zlp-screen-view is-hidden" id="zlp-tiktok-shop-screen">
+            <section class="zlp-static-screen zlp-shop-screen" aria-label="TikTok Shop">
+              <img class="zlp-shop-image" src="Assets/Tiktok Shop.png" alt="TikTok Shop" />
+              <div class="zlp-shop-noti" id="zlp-shop-noti" aria-hidden="true">
+                <img class="zlp-noti-image" src="Assets/Noti.png" alt="Thông báo nhận hoàn xu mới" />
+                <button class="zlp-shop-noti-button" id="zlp-shop-noti-button" type="button" aria-label="Mở thông báo"></button>
+              </div>
+            </section>
+          </div>
+
+          <section class="zlp-history-screen zlp-screen-view is-hidden" id="zlp-history-screen" aria-label="Lịch sử hoàn xu">
+            <div class="zlp-history-nav">
+              <img class="zlp-history-nav-image" src="Assets/nav-history.png" alt="Lịch sử hoàn xu" />
+              <button class="zlp-history-back" id="zlp-history-back" type="button" aria-label="Quay lại landing"></button>
+            </div>
+
+            <div class="zlp-history-content">
+              <div class="zlp-history-header">
+                <h2 class="zlp-history-heading">Lịch sử hoàn xu</h2>
+
+                <div class="zlp-history-tabs" aria-label="Bộ lọc lịch sử hoàn xu">
+                  <button class="zlp-history-tab is-active" data-history-tab="all" type="button">Tất cả</button>
+                  <button class="zlp-history-tab" data-history-tab="done" type="button">Đã hoàn</button>
+                  <button class="zlp-history-tab" data-history-tab="pending" type="button">Chờ hoàn</button>
+                  <button class="zlp-history-tab" data-history-tab="revoke" type="button">Thu hồi</button>
+                </div>
+              </div>
+
+              <div class="zlp-history-summary">
+                <div class="zlp-history-summary-copy">
+                  <h3 class="zlp-history-month-title" id="zlp-history-month-title">Tháng 06/2026</h3>
+                  <p class="zlp-history-month-total">Tổng xu được hoàn: <strong id="zlp-history-month-total">0 xu</strong></p>
+                </div>
+              </div>
+
+              <div class="zlp-history-list" id="zlp-history-list"></div>
+              <div class="zlp-history-empty" id="zlp-history-empty">
+                <div class="zlp-history-empty-card">
+                  <p class="zlp-history-empty-title" id="zlp-history-empty-title">Bạn chưa có lịch sử hoàn xu</p>
+                  <p class="zlp-history-empty-text" id="zlp-history-empty-text"></p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="zlp-coin-burst-layer" id="zlp-coin-burst-layer" aria-hidden="true"></div>
+          <div class="zlp-tray-overlay" id="zlp-tray-overlay" aria-hidden="true"></div>
+          <div class="zlp-tray" id="zlp-tray" aria-hidden="true">
+            <img class="zlp-tray-image" src="Assets/Tray-1.png" alt="Thông tin hoàn xu" />
+            <button class="zlp-tray-close" id="zlp-tray-close" type="button" aria-label="Đóng thông tin hoàn xu"></button>
+          </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Concepts share one shell but keep independent session state.
+      (function () {
+        const homeScreen = document.getElementById("zlp-home-screen");
+        const homeEntryButtons = Array.from(document.querySelectorAll("[data-home-entry]"));
+        const historyScreen = document.getElementById("zlp-history-screen");
+        const historyBackButton = document.getElementById("zlp-history-back");
+        const historyTabButtons = Array.from(document.querySelectorAll("[data-history-tab]"));
+        const historyList = document.getElementById("zlp-history-list");
+        const historyEmpty = document.getElementById("zlp-history-empty");
+        const historyEmptyTitle = document.getElementById("zlp-history-empty-title");
+        const historyMonthTitle = document.getElementById("zlp-history-month-title");
+        const historyMonthTotal = document.getElementById("zlp-history-month-total");
+        const tray = document.getElementById("zlp-tray");
+        const trayImage = tray ? tray.querySelector(".zlp-tray-image") : null;
+        const trayOverlay = document.getElementById("zlp-tray-overlay");
+        const trayCloseButton = document.getElementById("zlp-tray-close");
+        const rewardStatusInfoButtons = Array.from(document.querySelectorAll(".zlp-reward-status-info"));
+        const coinBurstLayer = document.getElementById("zlp-coin-burst-layer");
+        const flowScreen = document.getElementById("zlp-flow-screen");
+        const flowInform = document.getElementById("zlp-flow-inform");
+        const tiktokShopScreen = document.getElementById("zlp-tiktok-shop-screen");
+        const flowShopButtons = Array.from(document.querySelectorAll("[data-flow-shop-trigger]"));
+        const bodyTabButtons = Array.from(document.querySelectorAll("[data-body-tab-button]"));
+        const concept2DoneShopButton = document.getElementById("zlp-concept-2-done-shop-button");
+        const shopNoti = document.getElementById("zlp-shop-noti");
+        const shopNotiButton = document.getElementById("zlp-shop-noti-button");
+        const currentHistoryMonth = new Date();
+        const historyDoneDateLabel = "24/06/2026";
+        const topDownLettersMotion = {
+          enterDuration: 288,
+          enterStagger: 63,
+          enterEasing: "cubic-bezier(0.18, 1, 0.32, 1)",
+          enterFromY: -26.68,
+          exitDuration: 202,
+          exitStagger: 20,
+          exitEasing: "cubic-bezier(0.7, 0, 0.84, 0)",
+          exitToY: 8.12,
+          microDelay: 35,
+        };
+
+        const concepts = {
+          concept1: {
+            key: "concept1",
+            screen: document.getElementById("zlp-concept-1-screen"),
+            firstMission: document.getElementById("zlp-concept-1-first-mission"),
+            thirdMission: document.getElementById("zlp-concept-1-third-mission"),
+            tenthMission: document.getElementById("zlp-concept-1-tenth-mission"),
+            earnedNumber: document.getElementById("zlp-concept-1-earned-number"),
+            coinReceiveTarget: document.querySelector("#zlp-concept-1-screen .zlp-coin-earned"),
+            pendingNumber: null,
+            rewardDoneState: null,
+            rewardList: document.querySelector('#zlp-concept-1-screen [aria-label="Danh sách nhiệm vụ nhận xu Concept 1"]'),
+            historyOpenButton: document.getElementById("zlp-concept-1-history-open"),
+            earnedInfoButton: document.getElementById("zlp-concept-1-earned-info"),
+            rewardRows: Array.from(document.querySelectorAll('[data-concept="concept1"]')),
+            claimedRewardIds: new Set(),
+            historyEntries: [],
+            claimedRewardMetaById: {},
+            historyTab: "all",
+            totalMode: "earned",
+            showDoneState: false,
+            activeBodyTab: "redeemNow",
+            dynamicRewardCounter: 0,
+          },
+          concept2: {
+            key: "concept2",
+            screen: document.getElementById("zlp-concept-2-screen"),
+            firstMission: document.getElementById("zlp-concept-2-first-mission"),
+            thirdMission: document.getElementById("zlp-concept-2-third-mission"),
+            tenthMission: document.getElementById("zlp-concept-2-tenth-mission"),
+            earnedNumber: document.getElementById("zlp-concept-2-earned-number"),
+            earnedReceiveTarget: document.querySelector("#zlp-concept-2-screen .zlp-coin-earned"),
+            coinReceiveTarget: document.querySelector("#zlp-concept-2-screen .zlp-coin-pending"),
+            pendingNumber: document.getElementById("zlp-concept-2-pending-number"),
+            rewardDoneState: document.getElementById("zlp-concept-2-reward-done-state"),
+            rewardList: document.querySelector('#zlp-concept-2-screen [aria-label="Danh sách nhiệm vụ nhận xu Concept 2"]'),
+            historyOpenButton: document.getElementById("zlp-concept-2-history-open"),
+            earnedInfoButton: document.getElementById("zlp-concept-2-earned-info"),
+            rewardRows: Array.from(document.querySelectorAll('[data-concept="concept2"]')),
+            claimedRewardIds: new Set(),
+            releasedRewardIds: new Set(),
+            historyEntries: [],
+            claimedRewardMetaById: {},
+            releasedRewardMetaById: {},
+            transferInform: document.getElementById("zlp-concept-2-transfer-inform"),
+            transferAmount: document.getElementById("zlp-concept-2-transfer-amount"),
+            transferCountdown: document.getElementById("zlp-concept-2-transfer-countdown"),
+            activeTransferRewardId: "",
+            transferTimerId: 0,
+            dynamicRewardCounter: 0,
+            historyTab: "all",
+            totalMode: "pending",
+            showDoneState: true,
+            activeBodyTab: "redeemNow",
+          },
+        };
+
+        let currentConcept = "concept2";
+        let currentScreen = "home";
+        let currentHistoryConcept = "concept2";
+        let shoppingFlowNotiVisible = false;
+        let shoppingFlowNotiTimerId = 0;
+        let activeShoppingFlowConcept = "concept2";
+
+        if (
+          !homeScreen ||
+          !homeEntryButtons.length ||
+          !historyScreen ||
+          !historyBackButton ||
+          !historyList ||
+          !historyEmpty ||
+          !historyEmptyTitle ||
+          !historyMonthTitle ||
+          !historyMonthTotal ||
+          !tray ||
+          !trayImage ||
+          !trayOverlay ||
+          !trayCloseButton ||
+          !coinBurstLayer ||
+          !flowScreen ||
+          !flowInform ||
+          !tiktokShopScreen ||
+          !shopNoti ||
+          !shopNotiButton
+        ) {
+          return;
+        }
+
+        function getSerializableNavState() {
+          return {
+            screen: currentScreen,
+            concept: currentConcept,
+            historyConcept: currentHistoryConcept,
+            shoppingFlowConcept: activeShoppingFlowConcept,
+          };
+        }
+
+        function syncBrowserState(mode) {
+          if (!window.history || !window.history.replaceState) {
+            return;
+          }
+
+          const navState = getSerializableNavState();
+
+          if (mode === "push" && window.history.pushState) {
+            window.history.pushState(navState, "");
+            return;
+          }
+
+          window.history.replaceState(navState, "");
+        }
+
+        function padNumber(value) {
+          return String(value).padStart(2, "0");
+        }
+
+        function formatDisplayDate(date) {
+          return padNumber(date.getDate()) + "/" + padNumber(date.getMonth() + 1) + "/" + date.getFullYear();
+        }
+
+        function getHistoryMonthTitle(date) {
+          return "Tháng " + padNumber(date.getMonth() + 1) + "/" + date.getFullYear();
+        }
+
+        function getHistoryMonthChipLabel(date) {
+          return "Tháng " + (date.getMonth() + 1);
+        }
+
+        function formatXuValue(value) {
+          return Number(value).toLocaleString("vi-VN");
+        }
+
+        function formatOrderAmountLabel(value) {
+          return Number(value).toLocaleString("vi-VN") + "đ";
+        }
+
+        function randomReceiveInDays() {
+          return Math.floor(Math.random() * 10) + 1;
+        }
+
+        function getConceptState(conceptKey) {
+          return concepts[conceptKey];
+        }
+
+        function openTrayImage(imageSrc, imageAlt) {
+          if (imageSrc) {
+            trayImage.src = imageSrc;
+          }
+
+          if (typeof imageAlt === "string") {
+            trayImage.alt = imageAlt;
+          }
+
+          tray.classList.add("is-open");
+          trayOverlay.classList.add("is-open");
+          tray.setAttribute("aria-hidden", "false");
+          trayOverlay.setAttribute("aria-hidden", "false");
+        }
+
+        function openInfoTray() {
+          openTrayImage("Assets/Tray-1.png", "Thông tin hoàn xu");
+        }
+
+        function openMilestoneTray(level) {
+          if (level === 10) {
+            openTrayImage("Assets/Tray-Milestone-3.png", "Thông báo hoàn thành mốc 10 lần hoàn xu");
+            return;
+          }
+
+          if (level === 3) {
+            openTrayImage("Assets/Tray-Milestone-2.png", "Thông báo hoàn thành mốc 3 lần hoàn xu");
+            return;
+          }
+
+          openTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu");
+        }
+
+        function closeTray() {
+          tray.classList.remove("is-open");
+          trayOverlay.classList.remove("is-open");
+          tray.setAttribute("aria-hidden", "true");
+          trayOverlay.setAttribute("aria-hidden", "true");
+        }
+
+        function hideShopNoti() {
+          shoppingFlowNotiVisible = false;
+          shopNoti.classList.remove("is-visible");
+          shopNoti.setAttribute("aria-hidden", "true");
+        }
+
+        function clearShoppingFlowNotiTimer() {
+          if (shoppingFlowNotiTimerId) {
+            window.clearTimeout(shoppingFlowNotiTimerId);
+            shoppingFlowNotiTimerId = 0;
+          }
+        }
+
+        function showShopNoti() {
+          shoppingFlowNotiVisible = true;
+          shopNoti.classList.add("is-visible");
+          shopNoti.setAttribute("aria-hidden", "false");
+        }
+
+        function renderFlowInform() {
+          if (!flowInform) {
+            return;
+          }
+
+          const isConcept2Flow = activeShoppingFlowConcept === "concept2";
+          flowInform.src = isConcept2Flow ? "Assets/Inform.png" : "Assets/Inform-2.png";
+          flowInform.alt = isConcept2Flow
+            ? "Xu về ví sau 10 ngày kể từ lúc chốt đơn nha"
+            : "Nhận xu sau 10 ngày từ lúc chốt đơn nha";
+        }
+
+        function showScreen(screenName) {
+          currentScreen = screenName;
+          const isHome = screenName === "home";
+          const isHistory = screenName === "history";
+          const isTikTokShop = screenName === "tiktokShop";
+          const isLanding = screenName === "landing";
+
+          homeScreen.classList.toggle("is-hidden", !isHome);
+          historyScreen.classList.toggle("is-hidden", !isHistory);
+          tiktokShopScreen.classList.toggle("is-hidden", !isTikTokShop);
+          flowScreen.classList.toggle("is-hidden", !(isLanding && currentConcept === "flow"));
+
+          Object.keys(concepts).forEach(function (conceptKey) {
+            const concept = getConceptState(conceptKey);
+            concept.screen.classList.toggle("is-hidden", !(isLanding && conceptKey === currentConcept));
+          });
+        }
+
+        function updateConceptTabs() {
+          renderFlowInform();
+        }
+
+        function renderBodyTabs(conceptKey) {
+          const concept = getConceptState(conceptKey);
+
+          if (!concept) {
+            return;
+          }
+
+          const activeTab = concept.activeBodyTab || "redeemNow";
+
+          bodyTabButtons.forEach(function (button) {
+            if (button.dataset.bodyTabConcept !== conceptKey) {
+              return;
+            }
+
+            const isActive = button.dataset.bodyTabButton === activeTab;
+            button.classList.toggle("is-active", isActive);
+            button.setAttribute("aria-selected", isActive ? "true" : "false");
+          });
+
+          document.querySelectorAll('[data-body-tab-panel][data-body-tab-concept="' + conceptKey + '"]').forEach(function (panel) {
+            panel.classList.toggle("is-active", panel.dataset.bodyTabPanel === activeTab);
+          });
+        }
+
+        function openTikTokShopFlow() {
+          closeTray();
+          clearShoppingFlowNotiTimer();
+          hideShopNoti();
+          showScreen("tiktokShop");
+          syncBrowserState("replace");
+          shoppingFlowNotiTimerId = window.setTimeout(function () {
+            showShopNoti();
+          }, 3000);
+        }
+
+        function openHomeScreen() {
+          closeTray();
+          clearShoppingFlowNotiTimer();
+          hideShopNoti();
+          showScreen("home");
+          syncBrowserState("replace");
+        }
+
+        function applyNavState(state) {
+          const nextState = state || {
+            screen: "home",
+            concept: "concept2",
+            historyConcept: "concept2",
+            shoppingFlowConcept: "concept2",
+          };
+
+          closeTray();
+          clearShoppingFlowNotiTimer();
+          hideShopNoti();
+          activeShoppingFlowConcept = nextState.shoppingFlowConcept || "concept2";
+          currentConcept = nextState.concept || "concept2";
+          currentHistoryConcept = nextState.historyConcept || currentConcept;
+          updateConceptTabs();
+          showScreen(nextState.screen || "home");
+        }
+
+        function openHomeEntry(entryKey) {
+          closeTray();
+          clearShoppingFlowNotiTimer();
+          hideShopNoti();
+
+          if (entryKey === "concept1") {
+            currentConcept = "concept1";
+            updateConceptTabs();
+            showScreen("landing");
+          } else if (entryKey === "concept2") {
+            currentConcept = "concept2";
+            updateConceptTabs();
+            showScreen("landing");
+          } else if (entryKey === "flow-concept1") {
+            activeShoppingFlowConcept = "concept1";
+            currentConcept = "flow";
+            updateConceptTabs();
+            showScreen("landing");
+          } else {
+            activeShoppingFlowConcept = "concept2";
+            currentConcept = "flow";
+            updateConceptTabs();
+            showScreen("landing");
+          }
+
+          syncBrowserState("push");
+        }
+
+        function getFilteredHistoryEntries(concept) {
+          const conceptEntries = getHistoryEntriesForConcept(concept);
+
+          if (concept.historyTab === "pending") {
+            return conceptEntries.filter(function (entry) {
+              return entry.status === "pending";
+            });
+          }
+
+          if (concept.historyTab === "done") {
+            return conceptEntries.filter(function (entry) {
+              return entry.status === "done";
+            });
+          }
+
+          if (concept.historyTab === "revoke") {
+            return conceptEntries.filter(function (entry) {
+              return entry.status === "revoke";
+            });
+          }
+
+          return conceptEntries.slice();
+        }
+
+        function getHistoryTabLabel(tabKey) {
+          if (tabKey === "done") {
+            return "đã hoàn";
+          }
+
+          if (tabKey === "pending") {
+            return "chờ hoàn";
+          }
+
+          if (tabKey === "revoke") {
+            return "thu hồi";
+          }
+
+          return "hoàn xu";
+        }
+
+        function getConcept1PendingStateLabel(row) {
+          const waitDays = Number(row.dataset.historyWaitDays || 0);
+          return "Nhận sau " + waitDays + " ngày";
+        }
+
+        function getConcept2PendingStateLabel(concept, row) {
+          const rewardId = row.dataset.rewardId || "";
+          const waitDays = Number(row.dataset.historyWaitDays || 0);
+          const transferSeconds = Number(row.dataset.transferSeconds || 0);
+          const claimedMeta = concept.claimedRewardMetaById[rewardId];
+
+          if (rewardId.indexOf("reward-shopping-") === 0) {
+            return "Nhận sau 10 ngày";
+          }
+
+          if (concept.releasedRewardIds.has(rewardId)) {
+            return "Đã hoàn";
+          }
+
+          if (claimedMeta && claimedMeta.releaseEndsAt) {
+            return rewardId === "reward-500" ? "" : "Nhận sau " + waitDays + " ngày";
+          }
+
+          if (transferSeconds > 0) {
+            return "";
+          }
+
+          return "Nhận sau " + waitDays + " ngày";
+        }
+
+        function getHistoryEntriesForConcept(concept) {
+          if (concept.key === "concept2") {
+            return concept.rewardRows.map(function (row) {
+              const rewardId = row.dataset.rewardId || "";
+              const claimedMeta = concept.claimedRewardMetaById[rewardId];
+              const releasedMeta = concept.releasedRewardMetaById[rewardId];
+
+              return {
+                id: concept.key + "-" + rewardId,
+                rewardId: rewardId,
+                orderAmountLabel: row.dataset.orderAmount || "",
+                xuAmount: Number(row.dataset.xu || 0),
+                status: concept.releasedRewardIds.has(rewardId) ? "done" : "pending",
+                claimedAtLabel: releasedMeta
+                  ? releasedMeta.releasedAtLabel
+                  : claimedMeta
+                    ? claimedMeta.claimedAtLabel
+                    : "Chờ cập nhật",
+                receiveInDays: Number(row.dataset.historyWaitDays || 0),
+                stateLabel: getConcept2PendingStateLabel(concept, row),
+              };
+            });
+          }
+
+          if (concept.key !== "concept1") {
+            return concept.historyEntries.slice();
+          }
+
+          return concept.rewardRows.map(function (row) {
+            const rewardId = row.dataset.rewardId || "";
+            const claimedMeta = concept.claimedRewardMetaById[rewardId];
+            const isClaimed = concept.claimedRewardIds.has(rewardId);
+            const waitDays = Number(row.dataset.historyWaitDays || 0);
+
+            return {
+              id: concept.key + "-" + rewardId,
+              rewardId: rewardId,
+              orderAmountLabel: row.dataset.orderAmount || "",
+              xuAmount: Number(row.dataset.xu || 0),
+              status: isClaimed ? "done" : "pending",
+              claimedAtLabel: claimedMeta ? claimedMeta.claimedAtLabel : "",
+              receiveInDays: waitDays,
+              historyPaymentDate: row.dataset.historyPaymentDate || "",
+              stateLabel: isClaimed ? "Đã hoàn" : getConcept1PendingStateLabel(row),
+            };
+          });
+        }
+
+        function renderHistoryCard(entry, cardVariant, dateLabel) {
+          const xuIcon = cardVariant === "done" ? "Assets/Coin.png" : "Assets/xu-cho-icon.png";
+          const stateMarkup = entry.stateLabel
+            ? '<p class="zlp-history-item-state' +
+              (cardVariant === "done" ? " zlp-history-item-state--done" : "") +
+              '">' +
+              entry.stateLabel +
+              "</p>"
+            : "";
+
+          return (
+            '<article class="zlp-history-item zlp-history-item--' +
+            cardVariant +
+            '">' +
+            '<div class="zlp-history-item-copy">' +
+            '<p class="zlp-history-item-order">Đơn ' +
+            entry.orderAmountLabel +
+            "</p>" +
+            '<p class="zlp-history-item-date">' +
+            dateLabel +
+            "</p>" +
+            "</div>" +
+            '<div class="zlp-history-item-status">' +
+            '<div class="zlp-history-item-xu">' +
+            (cardVariant === "done" ? "+" : "") +
+            formatXuValue(entry.xuAmount) +
+            '<img class="zlp-history-item-xu-icon" src="' +
+            xuIcon +
+            '" alt="" />' +
+            "</div>" +
+            stateMarkup +
+            "</div>" +
+            "</article>"
+          );
+        }
+
+        function renderConcept1HistoryItem(entry) {
+          if (entry.status === "done") {
+            return renderHistoryCard(entry, "done", "Ngày thanh toán: " + historyDoneDateLabel);
+          }
+
+          const pendingDateLabel =
+            entry.receiveInDays === 0
+              ? "Ngày thanh toán: " + historyDoneDateLabel
+              : entry.historyPaymentDate
+                ? "Ngày thanh toán: " + entry.historyPaymentDate
+                : "Ngày thanh toán: Chờ cập nhật";
+
+          return renderHistoryCard(entry, "waiting", pendingDateLabel);
+        }
+
+        function renderHistoryItem(concept, entry) {
+          const isShoppingReward = entry.rewardId && entry.rewardId.indexOf("reward-shopping-") === 0;
+          const waitingDateLabel =
+            entry.receiveInDays === 0
+              ? "Ngày thanh toán: " + historyDoneDateLabel
+              : isShoppingReward
+                ? "Ngày thanh toán: 02/07/2026"
+                : "Ngày thanh toán: " + entry.claimedAtLabel;
+
+          if (concept.key === "concept1") {
+            return renderConcept1HistoryItem(entry);
+          }
+
+          if (entry.status === "done") {
+            return renderHistoryCard(entry, "done", "Ngày thanh toán: " + historyDoneDateLabel);
+          }
+
+          return renderHistoryCard(
+            {
+              rewardId: entry.rewardId,
+              orderAmountLabel: entry.orderAmountLabel,
+              xuAmount: entry.xuAmount,
+              stateLabel: entry.stateLabel || ("Nhận sau " + entry.receiveInDays + " ngày"),
+            },
+            "waiting",
+            waitingDateLabel
+          );
+        }
+
+        function renderHistoryList() {
+          const concept = getConceptState(currentHistoryConcept);
+
+          if (!concept) {
+            return;
+          }
+
+          const filteredEntries = getFilteredHistoryEntries(concept);
+          const historyTotal =
+            concept.key === "concept2"
+              ? getReleasedXuTotal(concept)
+              : concept.key === "concept1"
+                ? getClaimedXuTotal(concept)
+                : 0;
+
+          historyMonthTitle.textContent = getHistoryMonthTitle(currentHistoryMonth);
+          historyMonthTotal.textContent = historyTotal + " xu";
+
+          historyTabButtons.forEach(function (button) {
+            button.classList.toggle("is-active", button.dataset.historyTab === concept.historyTab);
+          });
+
+          if (!filteredEntries.length) {
+            historyList.classList.add("is-hidden");
+            historyEmpty.classList.add("is-visible");
+            historyEmptyTitle.textContent = "Bạn chưa có lịch sử " + getHistoryTabLabel(concept.historyTab);
+            historyList.innerHTML = "";
+            return;
+          }
+
+          historyList.classList.remove("is-hidden");
+          historyEmpty.classList.remove("is-visible");
+          historyList.innerHTML = filteredEntries
+            .map(function (entry) {
+              return renderHistoryItem(concept, entry);
+            })
+            .join("");
+        }
+
+        function openHistoryScreen(conceptKey) {
+          const concept = getConceptState(conceptKey);
+
+          if (!concept) {
+            return;
+          }
+
+          closeTray();
+          currentHistoryConcept = conceptKey;
+          renderHistoryList();
+          showScreen("history");
+        }
+
+        function closeHistoryScreen() {
+          showScreen("landing");
+          syncBrowserState("replace");
+        }
+
+        function createConcept2RewardRowMarkup(rewardId, xuAmount, orderAmountLabel, historyWaitDays) {
+          const waitMarkup =
+            historyWaitDays > 0 ? '<p class="zlp-reward-wait">Xu về sau ' + historyWaitDays + " ngày</p>" : "";
+
+          return (
+            '<article class="zlp-reward-row" ' +
+            'data-concept="concept2" ' +
+            'data-reward-id="' +
+            rewardId +
+            '" ' +
+            'data-xu="' +
+            xuAmount +
+            '" ' +
+            'data-order-amount="' +
+            orderAmountLabel +
+            '" ' +
+            'data-history-wait-days="' +
+            historyWaitDays +
+            '" ' +
+            'data-row-type="claim">' +
+            '<div class="zlp-reward-copy">' +
+            '<h3 class="zlp-reward-title">Hoàn ' +
+            formatXuValue(xuAmount) +
+            ' xu</h3>' +
+            '<p class="zlp-reward-order">Đơn hàng ' +
+            orderAmountLabel +
+            "</p>" +
+            waitMarkup +
+            "</div>" +
+            '<button class="zlp-claim-button" type="button" aria-label="Nhận xu cho hoàn ' +
+            formatXuValue(xuAmount) +
+            ' xu ở Concept 2">' +
+            '<img src="Assets/Buttons.png" alt="" />' +
+            "</button>" +
+            "</article>"
+          );
+        }
+
+        function generateShoppingReturnReward(concept) {
+          concept.dynamicRewardCounter += 1;
+          const minOrderAmount = 200000;
+          const maxOrderAmount = 800000;
+          const orderStep = 1000;
+          const stepCount = Math.floor((maxOrderAmount - minOrderAmount) / orderStep);
+          const orderAmount = minOrderAmount + Math.floor(Math.random() * (stepCount + 1)) * orderStep;
+          const xuAmount = Math.round(orderAmount * 0.005);
+
+          return {
+            rewardId: "reward-shopping-" + concept.dynamicRewardCounter,
+            xuAmount: xuAmount,
+            orderAmountLabel: formatOrderAmountLabel(orderAmount),
+            historyWaitDays: 10,
+          };
+        }
+
+        function appendConcept2RewardFromShoppingFlow() {
+          const concept = getConceptState("concept2");
+
+          if (!concept || !concept.rewardList) {
+            return;
+          }
+
+          const reward = generateShoppingReturnReward(concept);
+          concept.rewardDoneState.classList.remove("is-visible");
+          concept.rewardList.insertAdjacentHTML(
+            "beforeend",
+            createConcept2RewardRowMarkup(reward.rewardId, reward.xuAmount, reward.orderAmountLabel, reward.historyWaitDays)
+          );
+
+          const newRow = concept.rewardList.querySelector('[data-reward-id="' + reward.rewardId + '"]');
+
+          if (!newRow) {
+            return;
+          }
+
+          concept.rewardRows.push(newRow);
+          attachClaimHandlerForRow(concept, newRow);
+        }
+
+        function createConcept1ShoppingRewardRowMarkup(rewardId, xuAmount, orderAmountLabel, historyWaitDays) {
+          return (
+            '<article class="zlp-reward-row zlp-reward-row--countdown" ' +
+            'data-concept="concept1" ' +
+            'data-reward-id="' +
+            rewardId +
+            '" ' +
+            'data-xu="' +
+            xuAmount +
+            '" ' +
+            'data-order-amount="' +
+            orderAmountLabel +
+            '" ' +
+            'data-history-wait-days="' +
+            historyWaitDays +
+            '" ' +
+            'data-history-payment-date="02/07/2026" ' +
+            'data-row-type="countdown">' +
+            '<div class="zlp-reward-copy">' +
+            '<h3 class="zlp-reward-title">Hoàn ' +
+            formatXuValue(xuAmount) +
+            ' xu</h3>' +
+            '<p class="zlp-reward-order">Đơn hàng ' +
+            orderAmountLabel +
+            "</p>" +
+            "</div>" +
+            '<div class="zlp-reward-status" aria-label="Trạng thái chờ nhận còn 10 ngày">' +
+            '<div class="zlp-reward-status-top">' +
+            "<span>Chờ nhận</span>" +
+            '<button class="zlp-reward-status-info" type="button" aria-label="Thông tin trạng thái chờ nhận 10 ngày">i</button>' +
+            "</div>" +
+            '<div class="zlp-reward-status-chip">Còn 10 ngày</div>' +
+            "</div>" +
+            "</article>"
+          );
+        }
+
+        function appendConcept1RewardFromShoppingFlow() {
+          const concept = getConceptState("concept1");
+
+          if (!concept || !concept.rewardList) {
+            return;
+          }
+
+          const reward = generateShoppingReturnReward(concept);
+          const rewardId = "reward-shopping-c1-" + concept.dynamicRewardCounter;
+
+          concept.rewardList.insertAdjacentHTML(
+            "beforeend",
+            createConcept1ShoppingRewardRowMarkup(rewardId, reward.xuAmount, reward.orderAmountLabel, 10)
+          );
+
+          const newRow = concept.rewardList.querySelector('[data-reward-id="' + rewardId + '"]');
+
+          if (!newRow) {
+            return;
+          }
+
+          const infoButton = newRow.querySelector(".zlp-reward-status-info");
+
+          if (infoButton) {
+            infoButton.addEventListener("click", openInfoTray);
+          }
+
+          concept.rewardRows.push(newRow);
+        }
+
+        function handleShoppingFlowReturn() {
+          clearShoppingFlowNotiTimer();
+          hideShopNoti();
+
+          if (activeShoppingFlowConcept === "concept1") {
+            appendConcept1RewardFromShoppingFlow();
+            currentConcept = "concept1";
+          } else {
+            appendConcept2RewardFromShoppingFlow();
+            currentConcept = "concept2";
+          }
+
+          updateConceptTabs();
+          showScreen("landing");
+          syncBrowserState("replace");
+        }
+
+        function splitTextToChars(text) {
+          return Array.from(String(text));
+        }
+
+        function createAnimatedNumber(text, className) {
+          const wrapper = document.createElement("span");
+          wrapper.className = "zlp-animated-number " + className;
+          wrapper.setAttribute("aria-hidden", "true");
+
+          splitTextToChars(text).forEach(function (char) {
+            const charNode = document.createElement("span");
+            charNode.className = "zlp-animated-number-char";
+            charNode.textContent = char;
+            wrapper.appendChild(charNode);
+          });
+
+          return wrapper;
+        }
+
+        function getAnimatedChars(node) {
+          return Array.from(node.querySelectorAll(".zlp-animated-number-char"));
+        }
+
+        function getPhaseTotal(duration, stagger, count) {
+          return duration + Math.max(0, count - 1) * stagger;
+        }
+
+        function wait(ms) {
+          return new Promise(function (resolve) {
+            window.setTimeout(resolve, ms);
+          });
+        }
+
+        function runClaimTotalUpdate(concept) {
+          return updateAnimatedTotals(concept, "pendingOnly");
+        }
+
+        async function animatePhase(chars, direction) {
+          if (!chars.length) {
+            return;
+          }
+
+          const isEnter = direction === "enter";
+          const duration = isEnter ? topDownLettersMotion.enterDuration : topDownLettersMotion.exitDuration;
+          const stagger = isEnter ? topDownLettersMotion.enterStagger : topDownLettersMotion.exitStagger;
+          const easing = isEnter ? topDownLettersMotion.enterEasing : topDownLettersMotion.exitEasing;
+          const keyframes = isEnter
+            ? [
+                { opacity: 0, transform: "translate3d(0, " + topDownLettersMotion.enterFromY + "px, 0)" },
+                { opacity: 1, transform: "translate3d(0, 0px, 0)" },
+              ]
+            : [
+                { opacity: 1, transform: "translate3d(0, 0px, 0)" },
+                { opacity: 0, transform: "translate3d(0, " + topDownLettersMotion.exitToY + "px, 0)" },
+              ];
+
+          chars.forEach(function (char, index) {
+            const animation = char.animate(keyframes, {
+              delay: index * stagger,
+              duration: duration,
+              easing: easing,
+              fill: "forwards",
+            });
+
+            animation.finished.catch(function () {
+              return null;
+            });
+          });
+
+          await wait(getPhaseTotal(duration, stagger, chars.length));
+        }
+
+        async function swapAnimatedNumber(target, nextValue) {
+          if (!target) {
+            return;
+          }
+
+          const nextText = String(nextValue);
+          const currentText = target.dataset.value || target.textContent || "";
+
+          if (currentText === nextText) {
+            return;
+          }
+
+          if (target.dataset.animating === "true") {
+            target.dataset.queuedValue = nextText;
+            return;
+          }
+
+          target.dataset.animating = "true";
+          const currentNode = target.querySelector(".zlp-animated-number");
+          const className = currentNode ? currentNode.className.replace("zlp-animated-number ", "") : "";
+          const nextNode = createAnimatedNumber(nextText, className);
+
+          if (currentNode) {
+            await animatePhase(getAnimatedChars(currentNode), "exit");
+          }
+
+          await wait(topDownLettersMotion.microDelay);
+
+          target.textContent = "";
+          target.appendChild(nextNode);
+          target.dataset.value = nextText;
+          await animatePhase(getAnimatedChars(nextNode), "enter");
+          target.dataset.animating = "false";
+
+          if (target.dataset.queuedValue && target.dataset.queuedValue !== nextText) {
+            const queuedValue = target.dataset.queuedValue;
+            target.dataset.queuedValue = "";
+            await swapAnimatedNumber(target, queuedValue);
+            return;
+          }
+
+          target.dataset.queuedValue = "";
+        }
+
+        function setAnimatedNumberImmediately(target, nextValue) {
+          if (!target) {
+            return;
+          }
+
+          const nextText = String(nextValue);
+          const currentNode = target.querySelector(".zlp-animated-number");
+          const className = currentNode ? currentNode.className.replace("zlp-animated-number ", "") : "";
+
+          if (target.dataset.value === nextText) {
+            return;
+          }
+
+          target.dataset.animating = "false";
+          target.dataset.queuedValue = "";
+          target.textContent = "";
+          target.appendChild(createAnimatedNumber(nextText, className));
+          target.dataset.value = nextText;
+        }
+
+        function getClaimableRows(concept) {
+          return concept.rewardRows.filter(function (row) {
+            return row.dataset.rowType === "claim";
+          });
+        }
+
+        function getClaimedXuTotal(concept) {
+          let total = 0;
+
+          concept.rewardRows.forEach(function (row) {
+            if (concept.claimedRewardIds.has(row.dataset.rewardId)) {
+              total += Number(row.dataset.xu || 0);
+            }
+          });
+
+          return total;
+        }
+
+        function getReleasedXuTotal(concept) {
+          let total = 0;
+
+          concept.rewardRows.forEach(function (row) {
+            if (concept.releasedRewardIds && concept.releasedRewardIds.has(row.dataset.rewardId)) {
+              total += Number(row.dataset.xu || 0);
+            }
+          });
+
+          return total;
+        }
+
+        function getPendingXuTotal(concept) {
+          let total = 0;
+
+          concept.rewardRows.forEach(function (row) {
+            const rewardId = row.dataset.rewardId;
+            const transferSeconds = Number(row.dataset.transferSeconds || 0);
+
+            if (!concept.claimedRewardIds.has(rewardId)) {
+              return;
+            }
+
+            if (concept.releasedRewardIds && concept.releasedRewardIds.has(rewardId)) {
+              return;
+            }
+
+            if (transferSeconds <= 0) {
+              total += Number(row.dataset.xu || 0);
+              return;
+            }
+
+            total += Number(row.dataset.xu || 0);
+          });
+
+          return total;
+        }
+
+        function getElementCenterRect(element) {
+          const rect = element.getBoundingClientRect();
+
+          return {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          };
+        }
+
+        function animateCoinsBetween(sourceElement, targetElement, coinCount) {
+          if (!sourceElement || !targetElement) {
+            return Promise.resolve();
+          }
+
+          const start = getElementCenterRect(sourceElement);
+          const end = getElementCenterRect(targetElement);
+          const burstCount = coinCount || 8;
+          const completions = [];
+
+          for (let index = 0; index < burstCount; index += 1) {
+            const coin = document.createElement("img");
+            const spreadX = (index - (burstCount - 1) / 2) * 6;
+            const launchOffsetY = -6 - (index % 3) * 5;
+            const travelX = end.x - start.x + spreadX * 1.6;
+            const travelY = end.y - start.y - 42 - index * 4;
+            const duration = 760 + index * 36;
+            const delay = index * 42;
+            const midX = travelX * 0.5 + spreadX * 3;
+            const midY = travelY * 0.58 - 26 - (index % 2) * 12;
+
+            coin.className = "zlp-flying-coin";
+            coin.src = "Assets/Coin.png";
+            coin.alt = "";
+            coin.style.transform = "translate3d(" + start.x + "px, " + start.y + "px, 0) scale(0.96)";
+            coinBurstLayer.appendChild(coin);
+
+            const animation = coin.animate(
+              [
+                {
+                  opacity: 0,
+                  transform: "translate3d(" + (start.x - 8) + "px, " + (start.y + 4) + "px, 0) scale(0.82)",
+                },
+                {
+                  opacity: 1,
+                  offset: 0.14,
+                  transform:
+                    "translate3d(" +
+                    (start.x + spreadX) +
+                    "px, " +
+                    (start.y + launchOffsetY) +
+                    "px, 0) scale(1.28)",
+                },
+                {
+                  opacity: 1,
+                  offset: 0.68,
+                  transform:
+                    "translate3d(" + (start.x + midX) + "px, " + (start.y + midY) + "px, 0) scale(0.84)",
+                },
+                {
+                  opacity: 0,
+                  transform:
+                    "translate3d(" + (start.x + travelX) + "px, " + (start.y + travelY) + "px, 0) scale(0.28)",
+                },
+              ],
+              {
+                duration: duration,
+                delay: delay,
+                easing: "cubic-bezier(0.22, 0.8, 0.22, 1)",
+                fill: "forwards",
+              }
+            );
+
+            animation.finished
+              .catch(function () {
+                return null;
+              })
+              .then(function () {
+                if (coin.parentNode) {
+                  coin.parentNode.removeChild(coin);
+                }
+              });
+
+            completions.push(
+              animation.finished.catch(function () {
+                return null;
+              })
+            );
+          }
+
+          return Promise.all(completions);
+        }
+
+        function animateClaimCoins(concept, row) {
+          const triggerButton = row.querySelector(".zlp-claim-button");
+          return animateCoinsBetween(triggerButton, concept.coinReceiveTarget, 8);
+        }
+
+        function animateMilestoneUnlock(missionImage) {
+          if (!missionImage || !missionImage.animate) {
+            return Promise.resolve();
+          }
+
+          missionImage.classList.add("is-unlocking");
+          const animation = missionImage.animate(
+            [
+              { transform: "scale(1)", filter: "brightness(1)" },
+              { transform: "scale(1.08)", filter: "brightness(1.08)" },
+              { transform: "scale(1)", filter: "brightness(1)" },
+            ],
+            {
+              duration: 320,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              fill: "none",
+            }
+          );
+
+          return animation.finished
+            .catch(function () {
+              return null;
+            })
+            .then(function () {
+              missionImage.classList.remove("is-unlocking");
+            });
+        }
+
+        async function updateMilestones(concept) {
+          const claimedCount = concept.claimedRewardIds.size;
+          const unlockedMilestones = [];
+
+          if (claimedCount >= 1 && concept.firstMission && concept.firstMission.src.indexOf("1-done.png") === -1) {
+            concept.firstMission.src = "Assets/1-done.png";
+            concept.firstMission.alt = "Voucher 8%, hoàn thành";
+            unlockedMilestones.push({ level: 1, image: concept.firstMission });
+          }
+
+          if (claimedCount >= 3 && concept.thirdMission && concept.thirdMission.src.indexOf("3-done.png") === -1) {
+            concept.thirdMission.src = "Assets/3-done.png";
+            concept.thirdMission.alt = "Voucher 10%, hoàn thành";
+            unlockedMilestones.push({ level: 3, image: concept.thirdMission });
+          }
+
+          if (claimedCount >= 10 && concept.tenthMission && concept.tenthMission.src.indexOf("10-done.png") === -1) {
+            concept.tenthMission.src = "Assets/10-done.png";
+            concept.tenthMission.alt = "Voucher 15%, hoàn thành";
+            unlockedMilestones.push({ level: 10, image: concept.tenthMission });
+          }
+
+          for (const milestone of unlockedMilestones) {
+            await animateMilestoneUnlock(milestone.image);
+            openMilestoneTray(milestone.level);
+          }
+        }
+
+        async function updateAnimatedTotals(concept, mode) {
+          const tasks = [];
+
+          if (concept.totalMode === "earned") {
+            tasks.push(swapAnimatedNumber(concept.earnedNumber, getClaimedXuTotal(concept)));
+          } else if (concept.totalMode === "pending") {
+            const pendingTotal = getPendingXuTotal(concept);
+            const earnedTotal = getReleasedXuTotal(concept);
+
+            if (mode === "earnedOnly") {
+              setAnimatedNumberImmediately(concept.pendingNumber, pendingTotal);
+              tasks.push(swapAnimatedNumber(concept.earnedNumber, earnedTotal));
+            } else if (mode === "pendingOnly") {
+              tasks.push(swapAnimatedNumber(concept.pendingNumber, pendingTotal));
+              setAnimatedNumberImmediately(concept.earnedNumber, earnedTotal);
+            } else {
+              tasks.push(swapAnimatedNumber(concept.pendingNumber, pendingTotal));
+              tasks.push(swapAnimatedNumber(concept.earnedNumber, earnedTotal));
+            }
+          }
+
+          await Promise.all(tasks);
+        }
+
+        function updateDoneState(concept) {
+          if (!concept.showDoneState || !concept.rewardDoneState) {
+            return;
+          }
+
+          if (concept.claimedRewardIds.size === getClaimableRows(concept).length) {
+            concept.rewardDoneState.classList.add("is-visible");
+          }
+        }
+
+        function appendHistoryEntry(concept, row) {
+          if (concept.key === "concept1") {
+            const claimedAt = new Date();
+            concept.claimedRewardMetaById[row.dataset.rewardId || ""] = {
+              claimedAt: claimedAt,
+              claimedAtLabel: formatDisplayDate(claimedAt),
+            };
+            return;
+          }
+
+          if (concept.key === "concept2") {
+            const claimedAt = new Date();
+            const rewardId = row.dataset.rewardId || "";
+            const transferSeconds = Number(row.dataset.transferSeconds || 0);
+            const claimedMeta = {
+              claimedAt: claimedAt,
+              claimedAtLabel: formatDisplayDate(claimedAt),
+            };
+
+            if (transferSeconds > 0) {
+              claimedMeta.releaseEndsAt = claimedAt.getTime() + transferSeconds * 1000;
+            }
+
+            concept.claimedRewardMetaById[rewardId] = claimedMeta;
+            return;
+          }
+
+          const claimedAt = new Date();
+
+          concept.historyEntries.unshift({
+            id: concept.key + "-" + row.dataset.rewardId + "-" + claimedAt.getTime(),
+            rewardId: row.dataset.rewardId || "",
+            orderAmountLabel: row.dataset.orderAmount || "",
+            xuAmount: Number(row.dataset.xu || 0),
+            status: "pending",
+            claimedAt: claimedAt,
+            claimedAtLabel: formatDisplayDate(claimedAt),
+            receiveInDays: randomReceiveInDays(),
+          });
+        }
+
+        function renderConcept2TransferInform(concept) {
+          if (!concept.transferInform || !concept.transferAmount || !concept.transferCountdown) {
+            return;
+          }
+
+          const rewardId = concept.activeTransferRewardId;
+          const claimedMeta = rewardId ? concept.claimedRewardMetaById[rewardId] : null;
+          const activeRow = rewardId
+            ? concept.rewardRows.find(function (row) {
+                return row.dataset.rewardId === rewardId;
+              })
+            : null;
+
+          if (!rewardId || !claimedMeta || !activeRow) {
+            concept.transferInform.classList.remove("is-visible");
+            return;
+          }
+
+          const remainingSeconds = Math.max(0, Math.ceil((claimedMeta.releaseEndsAt - Date.now()) / 1000));
+          concept.transferAmount.textContent = "+" + Number(activeRow.dataset.xu || 0);
+          concept.transferCountdown.textContent = String(remainingSeconds);
+          concept.transferInform.classList.add("is-visible");
+        }
+
+        function releaseConcept2Reward(concept, rewardId) {
+          const rewardMeta = concept.claimedRewardMetaById[rewardId];
+
+          if (!rewardMeta || concept.releasedRewardIds.has(rewardId)) {
+            return;
+          }
+
+          const releasedAt = new Date();
+          concept.releasedRewardIds.add(rewardId);
+          concept.releasedRewardMetaById[rewardId] = {
+            releasedAt: releasedAt,
+            releasedAtLabel: formatDisplayDate(releasedAt),
+          };
+          concept.activeTransferRewardId = "";
+
+          animateCoinsBetween(concept.coinReceiveTarget, concept.earnedReceiveTarget, 7);
+          updateAnimatedTotals(concept, "earnedOnly");
+          renderConcept2TransferInform(concept);
+
+          if (currentHistoryConcept === concept.key && currentScreen === "history") {
+            renderHistoryList();
+          }
+        }
+
+        function startConcept2Transfer(concept, row) {
+          const rewardId = row.dataset.rewardId || "";
+
+          if (!rewardId) {
+            return;
+          }
+
+          if (concept.transferTimerId) {
+            window.clearInterval(concept.transferTimerId);
+            concept.transferTimerId = 0;
+          }
+
+          concept.activeTransferRewardId = rewardId;
+          renderConcept2TransferInform(concept);
+
+          concept.transferTimerId = window.setInterval(function () {
+            const claimedMeta = concept.claimedRewardMetaById[rewardId];
+
+            if (!claimedMeta) {
+              window.clearInterval(concept.transferTimerId);
+              concept.transferTimerId = 0;
+              renderConcept2TransferInform(concept);
+              return;
+            }
+
+            if (Date.now() >= claimedMeta.releaseEndsAt) {
+              window.clearInterval(concept.transferTimerId);
+              concept.transferTimerId = 0;
+              releaseConcept2Reward(concept, rewardId);
+              return;
+            }
+
+            renderConcept2TransferInform(concept);
+
+            if (currentHistoryConcept === concept.key && currentScreen === "history") {
+              renderHistoryList();
+            }
+          }, 250);
+        }
+
+        function attachClaimHandlerForRow(concept, row) {
+          if (!row || row.dataset.rowType !== "claim" || row.dataset.boundClaim === "true") {
+            return;
+          }
+
+          const rewardId = row.dataset.rewardId;
+          const rewardButton = row.querySelector(".zlp-claim-button");
+
+          if (!rewardId || !rewardButton) {
+            return;
+          }
+
+          row.dataset.boundClaim = "true";
+          rewardButton.addEventListener("click", async function () {
+            if (concept.claimedRewardIds.has(rewardId)) {
+              return;
+            }
+
+            concept.claimedRewardIds.add(rewardId);
+            rewardButton.disabled = true;
+            appendHistoryEntry(concept, row);
+
+            const claimCoinAnimation = animateClaimCoins(concept, row);
+            await wait(560);
+            await runClaimTotalUpdate(concept);
+            await claimCoinAnimation;
+
+            if (concept.key === "concept2" && Number(row.dataset.transferSeconds || 0) > 0) {
+              startConcept2Transfer(concept, row);
+            }
+
+            row.classList.add("is-claiming");
+            window.setTimeout(async function () {
+              row.classList.add("is-hidden");
+              updateDoneState(concept);
+              await wait(300);
+              await updateMilestones(concept);
+            }, 240);
+          });
+        }
+
+        function attachClaimHandlers(conceptKey) {
+          const concept = getConceptState(conceptKey);
+
+          concept.rewardRows.forEach(function (row) {
+            attachClaimHandlerForRow(concept, row);
+          });
+        }
+
+        Object.keys(concepts).forEach(function (conceptKey) {
+          const concept = getConceptState(conceptKey);
+
+          if (concept.earnedNumber) {
+            concept.earnedNumber.dataset.value = concept.earnedNumber.textContent;
+          }
+
+          if (concept.pendingNumber) {
+            concept.pendingNumber.dataset.value = concept.pendingNumber.textContent;
+          }
+
+          concept.earnedInfoButton.addEventListener("click", openInfoTray);
+          concept.historyOpenButton.addEventListener("click", function () {
+            openHistoryScreen(conceptKey);
+          });
+
+          attachClaimHandlers(conceptKey);
+        });
+
+        homeEntryButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            openHomeEntry(button.dataset.homeEntry || "concept2");
+          });
+        });
+
+        bodyTabButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            const conceptKey = button.dataset.bodyTabConcept;
+            const tabKey = button.dataset.bodyTabButton;
+            const concept = getConceptState(conceptKey);
+
+            if (!concept || !tabKey) {
+              return;
+            }
+
+            concept.activeBodyTab = tabKey;
+            renderBodyTabs(conceptKey);
+          });
+        });
+
+        flowShopButtons.forEach(function (button) {
+          button.addEventListener("click", openTikTokShopFlow);
+        });
+        if (concept2DoneShopButton) {
+          concept2DoneShopButton.addEventListener("click", function () {
+            activeShoppingFlowConcept = "concept2";
+            openTikTokShopFlow();
+          });
+        }
+        shopNotiButton.addEventListener("click", handleShoppingFlowReturn);
+
+        trayCloseButton.addEventListener("click", closeTray);
+        trayOverlay.addEventListener("click", closeTray);
+        rewardStatusInfoButtons.forEach(function (button) {
+          button.addEventListener("click", openInfoTray);
+        });
+        historyBackButton.addEventListener("click", closeHistoryScreen);
+        historyTabButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            const concept = getConceptState(currentHistoryConcept);
+
+            if (!concept) {
+              return;
+            }
+
+            concept.historyTab = button.dataset.historyTab || "all";
+            renderHistoryList();
+          });
+        });
+
+        window.addEventListener("popstate", function (event) {
+          applyNavState(event.state);
+        });
+
+        Object.keys(concepts).forEach(renderBodyTabs);
+        updateConceptTabs();
+        applyNavState(window.history.state);
+        syncBrowserState("replace");
+      })();
+    </script>
+  </body>
+</html>
