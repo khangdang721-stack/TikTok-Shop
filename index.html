@@ -419,6 +419,20 @@
         }
       }
 
+      @keyframes zlp-claim-button-breathe {
+        0% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.035);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+
       .zlp-coin-history {
         display: block;
         width: 100%;
@@ -858,6 +872,8 @@
         border: 0;
         background: transparent;
         cursor: pointer;
+        transform-origin: center center;
+        animation: zlp-claim-button-breathe 2.2s ease-in-out infinite;
       }
 
       .zlp-claim-button img {
@@ -866,7 +882,9 @@
         height: auto;
       }
 
+      .zlp-reward-row.is-claiming .zlp-claim-button,
       .zlp-claim-button:disabled {
+        animation: none;
         cursor: default;
       }
 
