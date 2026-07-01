@@ -1950,16 +1950,22 @@
 
         function openMilestoneTray(level) {
           if (level === 10) {
-            openPriorityTrayImage("Assets/Tray-Milestone-3.png", "Thông báo hoàn thành mốc 10 lần hoàn xu", "milestone");
-            return;
+            return openPriorityTrayImage(
+              "Assets/Tray-Milestone-3.png",
+              "Thông báo hoàn thành mốc 10 lần hoàn xu",
+              "milestone"
+            );
           }
 
           if (level === 3) {
-            openPriorityTrayImage("Assets/Tray-Milestone-2.png", "Thông báo hoàn thành mốc 3 lần hoàn xu", "milestone");
-            return;
+            return openPriorityTrayImage(
+              "Assets/Tray-Milestone-2.png",
+              "Thông báo hoàn thành mốc 3 lần hoàn xu",
+              "milestone"
+            );
           }
 
-          openPriorityTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu", "milestone");
+          return openPriorityTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu", "milestone");
         }
 
         function closeTray() {
@@ -2934,7 +2940,7 @@
 
           for (const milestone of unlockedMilestones) {
             await animateMilestoneUnlock(milestone.image);
-            openMilestoneTray(milestone.level);
+            await openMilestoneTray(milestone.level);
           }
 
           return unlockedMilestones.length;
