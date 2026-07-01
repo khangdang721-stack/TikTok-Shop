@@ -680,7 +680,7 @@
 
       /* Shared info tray for Xu da hoan. */
       .zlp-tray-overlay {
-        position: absolute;
+        position: fixed;
         inset: 0;
         z-index: 40;
         background: rgba(0, 31, 62, 0.8);
@@ -703,6 +703,7 @@
         opacity: 0;
         transform: translateY(28px);
         pointer-events: none;
+        will-change: transform, opacity;
         transition: opacity 220ms ease, transform 220ms ease;
       }
 
@@ -1771,6 +1772,9 @@
         let shoppingFlowNotiTimerId = 0;
         let activeShoppingFlowConcept = "concept2";
         let activeLandingContext = "default";
+        let activeTraySrc = "";
+        let pendingTrayPayload = null;
+        let trayCloseTimerId = 0;
 
         if (
           !homeScreen ||
@@ -1853,19 +1857,49 @@
           return concepts[conceptKey];
         }
 
-        function openTrayImage(imageSrc, imageAlt) {
+        function clearTrayCloseTimer() {
+          if (trayCloseTimerId) {
+            window.clearTimeout(trayCloseTimerId);
+            trayCloseTimerId = 0;
+          }
+        }
+
+        function applyTrayPayload(imageSrc, imageAlt) {
           if (imageSrc) {
             trayImage.src = imageSrc;
+            activeTraySrc = imageSrc;
           }
 
           if (typeof imageAlt === "string") {
             trayImage.alt = imageAlt;
           }
+        }
 
+        function showTrayShell() {
           tray.classList.add("is-open");
           trayOverlay.classList.add("is-open");
           tray.setAttribute("aria-hidden", "false");
           trayOverlay.setAttribute("aria-hidden", "false");
+        }
+
+        function openTrayImage(imageSrc, imageAlt) {
+          clearTrayCloseTimer();
+
+          if (tray.classList.contains("is-open")) {
+            if (activeTraySrc === imageSrc) {
+              return;
+            }
+
+            pendingTrayPayload = {
+              imageSrc: imageSrc,
+              imageAlt: imageAlt,
+            };
+            closeTray();
+            return;
+          }
+
+          applyTrayPayload(imageSrc, imageAlt);
+          showTrayShell();
         }
 
         function openInfoTray() {
@@ -1887,10 +1921,25 @@
         }
 
         function closeTray() {
+          clearTrayCloseTimer();
           tray.classList.remove("is-open");
           trayOverlay.classList.remove("is-open");
           tray.setAttribute("aria-hidden", "true");
           trayOverlay.setAttribute("aria-hidden", "true");
+
+          trayCloseTimerId = window.setTimeout(function () {
+            trayCloseTimerId = 0;
+
+            if (!pendingTrayPayload) {
+              activeTraySrc = "";
+              return;
+            }
+
+            const nextTrayPayload = pendingTrayPayload;
+            pendingTrayPayload = null;
+            applyTrayPayload(nextTrayPayload.imageSrc, nextTrayPayload.imageAlt);
+            showTrayShell();
+          }, 220);
         }
 
         function hideShopNoti() {
