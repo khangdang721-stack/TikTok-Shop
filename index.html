@@ -1658,7 +1658,7 @@
           <div class="zlp-coin-burst-layer" id="zlp-coin-burst-layer" aria-hidden="true"></div>
           <div class="zlp-tray-overlay" id="zlp-tray-overlay" aria-hidden="true"></div>
           <div class="zlp-tray" id="zlp-tray" aria-hidden="true">
-            <img class="zlp-tray-image" src="Assets/Tray-1.png" alt="Thông tin hoàn xu" />
+            <img class="zlp-tray-image" alt="" />
             <button class="zlp-tray-close" id="zlp-tray-close" type="button" aria-label="Đóng thông tin hoàn xu"></button>
           </div>
           </section>
@@ -1775,6 +1775,7 @@
         let activeTraySrc = "";
         let pendingTrayPayload = null;
         let trayCloseTimerId = 0;
+        const trayAssetCache = new Map();
 
         if (
           !homeScreen ||
@@ -1864,6 +1865,33 @@
           }
         }
 
+        function loadTrayAsset(imageSrc) {
+          if (!imageSrc) {
+            return Promise.resolve();
+          }
+
+          if (trayAssetCache.has(imageSrc)) {
+            return trayAssetCache.get(imageSrc);
+          }
+
+          const assetPromise = new Promise(function (resolve) {
+            const preloadedImage = new Image();
+
+            preloadedImage.onload = function () {
+              resolve();
+            };
+
+            preloadedImage.onerror = function () {
+              resolve();
+            };
+
+            preloadedImage.src = imageSrc;
+          });
+
+          trayAssetCache.set(imageSrc, assetPromise);
+          return assetPromise;
+        }
+
         function applyTrayPayload(imageSrc, imageAlt) {
           if (imageSrc) {
             trayImage.src = imageSrc;
@@ -1882,7 +1910,7 @@
           trayOverlay.setAttribute("aria-hidden", "false");
         }
 
-        function openTrayImage(imageSrc, imageAlt) {
+        async function openTrayImage(imageSrc, imageAlt) {
           clearTrayCloseTimer();
 
           if (tray.classList.contains("is-open")) {
@@ -1898,6 +1926,15 @@
             return;
           }
 
+          await loadTrayAsset(imageSrc);
+          applyTrayPayload(imageSrc, imageAlt);
+          showTrayShell();
+        }
+
+        async function openPriorityTrayImage(imageSrc, imageAlt) {
+          clearTrayCloseTimer();
+          pendingTrayPayload = null;
+          await loadTrayAsset(imageSrc);
           applyTrayPayload(imageSrc, imageAlt);
           showTrayShell();
         }
@@ -1908,16 +1945,16 @@
 
         function openMilestoneTray(level) {
           if (level === 10) {
-            openTrayImage("Assets/Tray-Milestone-3.png", "Thông báo hoàn thành mốc 10 lần hoàn xu");
+            openPriorityTrayImage("Assets/Tray-Milestone-3.png", "Thông báo hoàn thành mốc 10 lần hoàn xu");
             return;
           }
 
           if (level === 3) {
-            openTrayImage("Assets/Tray-Milestone-2.png", "Thông báo hoàn thành mốc 3 lần hoàn xu");
+            openPriorityTrayImage("Assets/Tray-Milestone-2.png", "Thông báo hoàn thành mốc 3 lần hoàn xu");
             return;
           }
 
-          openTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu");
+          openPriorityTrayImage("Assets/Tray-Milestone-1.png", "Thông báo hoàn thành mốc 1 lần hoàn xu");
         }
 
         function closeTray() {
@@ -1932,13 +1969,14 @@
 
             if (!pendingTrayPayload) {
               activeTraySrc = "";
+              trayImage.removeAttribute("src");
+              trayImage.alt = "";
               return;
             }
 
             const nextTrayPayload = pendingTrayPayload;
             pendingTrayPayload = null;
-            applyTrayPayload(nextTrayPayload.imageSrc, nextTrayPayload.imageAlt);
-            showTrayShell();
+            openTrayImage(nextTrayPayload.imageSrc, nextTrayPayload.imageAlt);
           }, 220);
         }
 
