@@ -2183,8 +2183,21 @@
           syncBrowserState("push");
         }
 
-        function getFilteredHistoryEntries(concept) {
+        function getContextualHistoryEntries(concept) {
           const conceptEntries = getHistoryEntriesForConcept(concept);
+          const isFlowReturnContext = activeLandingContext === getFlowReturnContextForConcept(concept.key);
+
+          if (!isFlowReturnContext) {
+            return conceptEntries;
+          }
+
+          return conceptEntries.filter(function (entry) {
+            return entry.rewardSource === "shopping-flow";
+          });
+        }
+
+        function getFilteredHistoryEntries(concept) {
+          const conceptEntries = getContextualHistoryEntries(concept);
 
           if (concept.historyTab === "pending") {
             return conceptEntries.filter(function (entry) {
@@ -2272,6 +2285,7 @@
                     ? claimedMeta.claimedAtLabel
                     : "Chờ cập nhật",
                 receiveInDays: Number(row.dataset.historyWaitDays || 0),
+                rewardSource: row.dataset.rewardSource || "default",
                 stateLabel: getConcept2PendingStateLabel(concept, row),
               };
             });
@@ -2296,9 +2310,20 @@
               claimedAtLabel: claimedMeta ? claimedMeta.claimedAtLabel : "",
               receiveInDays: waitDays,
               historyPaymentDate: row.dataset.historyPaymentDate || "",
+              rewardSource: row.dataset.rewardSource || "default",
               stateLabel: isClaimed ? "Đã hoàn" : getConcept1PendingStateLabel(row),
             };
           });
+        }
+
+        function getHistoryTotalFromEntries(entries) {
+          return entries.reduce(function (total, entry) {
+            if (entry.status !== "done") {
+              return total;
+            }
+
+            return total + Number(entry.xuAmount || 0);
+          }, 0);
         }
 
         function renderHistoryCard(entry, cardVariant, dateLabel) {
@@ -2389,12 +2414,7 @@
           }
 
           const filteredEntries = getFilteredHistoryEntries(concept);
-          const historyTotal =
-            concept.key === "concept2"
-              ? getReleasedXuTotal(concept)
-              : concept.key === "concept1"
-                ? getClaimedXuTotal(concept)
-                : 0;
+          const historyTotal = getHistoryTotalFromEntries(getContextualHistoryEntries(concept));
 
           historyMonthTitle.textContent = getHistoryMonthTitle(currentHistoryMonth);
           historyMonthTotal.textContent = historyTotal + " xu";
